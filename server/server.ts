@@ -111,7 +111,12 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
   }
 });
 
-/// MEDICATIONS
+/** MEDICATIONS
+ * GET all medications
+ * READS a medication
+ * UPDATES a medication
+ * DELETE a medication
+ */
 
 app.get('/api/medications', authMiddleware, async (req, res, next) => {
   try {
@@ -199,7 +204,13 @@ app.delete(
   }
 );
 
-/// IMMUNIZATIONS
+/** IMMUNIZATIONS
+ * GET all immunizations
+ * GET an immunization
+ * READ an immunization
+ * UPDATE an immunization
+ * DELETE an immunization
+ */
 
 app.get('/api/immunizations', authMiddleware, async (req, res, next) => {
   try {
@@ -315,7 +326,13 @@ app.delete(
   }
 );
 
-/// SYMPTOM CHECKER
+/** SYMPTOM CHECKER
+ * GET all symptoms
+ * GET a symptom
+ * READ a symptom
+ * UPDATE a symptom
+ * DELETE a symptom
+ */
 
 app.get('/api/symptomChecker', authMiddleware, async (req, res, next) => {
   try {
@@ -431,7 +448,13 @@ app.delete(
   }
 );
 
-/// INTERACTIONS
+/** INTERACTIONS
+ * GET all medication interactions
+ * GET interaction by medication pair medId1 and medId2 and names
+ * READ medId1 and medId2 interactions
+ * UPDATE medId1 and medId2 to change the interaction and message
+ * DELETE an interaction
+ */
 
 app.get('/api/interactions', authMiddleware, async (req, res, next) => {
   try {
