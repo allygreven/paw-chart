@@ -7,7 +7,7 @@ import { FaNotesMedical } from 'react-icons/fa';
 
 export function Homepage() {
   return (
-    <div>
+    <div className="flex bg-[#F6F2EF] h-screen">
       <ul className="list-none">
         <li>
           <CgPill /> Medications

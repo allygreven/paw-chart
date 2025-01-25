@@ -1,27 +1,25 @@
-// import { Route, Routes } from 'react-router-dom';
-import './App.css';
-import { Header } from './components/Header';
-// import { Immunizations } from './pages/Immunizations';
-// import { Medications } from './pages/Medications';
-// import { SymptomChecker } from './pages/SymptomChecker';
+import { Route, Routes } from 'react-router-dom';
+import { Immunizations } from './pages/Immunizations';
+import { Medications } from './pages/Medications';
+import { SymptomChecker } from './pages/SymptomChecker';
 import { NavDrawer } from './components/NavDrawer';
 import { Homepage } from './pages/Homepage';
 import { Register } from './pages/Register';
 import { SignIn } from './pages/SignIn';
+import { NotFound } from './pages/NotFound';
 
 export default function App() {
   return (
-    <>
-      <SignIn />
-      <Register />
-      <NavDrawer />
-      <Header />
-      <Homepage />
-
-      {/* <Immunizations />
-      <Medications />
-      <SymptomChecker />
-      <NotFound /> */}
-    </>
+    <Routes>
+      <Route path="/" element={<NavDrawer />}>
+        <Route path="sign-in" element={<SignIn />} />
+        <Route path="register" element={<Register />} />
+        <Route index element={<Homepage />} />
+        <Route path="immunizations" element={<Immunizations />} />
+        <Route path="medications" element={<Medications />} />
+        <Route path="symptom-checker" element={<SymptomChecker />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 }
