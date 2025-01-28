@@ -8,11 +8,29 @@ import { Register } from './pages/Register';
 import { SignIn } from './pages/SignIn';
 import { NotFound } from './pages/NotFound';
 import { About } from './pages/About';
+import { IoHome } from 'react-icons/io5';
+import { CgPill } from 'react-icons/cg';
+import { FaNotesMedical, FaThermometerFull } from 'react-icons/fa';
+import { GoInfo } from 'react-icons/go';
+import { PiSignOut } from 'react-icons/pi';
+
+const menuItems = [
+  { name: 'Home', icon: IoHome, path: '/' },
+  { name: 'Medications', icon: CgPill, path: '/medications' },
+  {
+    name: 'Symptom Checker',
+    icon: FaThermometerFull,
+    path: '/symptom-checker',
+  },
+  { name: 'Immunizations', icon: FaNotesMedical, path: '/immunizations' },
+  { name: 'About', icon: GoInfo, path: '/about' },
+  { name: 'Sign-out', icon: PiSignOut, path: '/sign-out' },
+];
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<NavDrawer />}>
+      <Route path="/" element={<NavDrawer menuItems={menuItems} />}>
         <Route path="sign-in" element={<SignIn />} />
         <Route path="register" element={<Register />} />
         <Route index element={<Homepage />} />

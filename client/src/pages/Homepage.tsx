@@ -7,26 +7,26 @@ import { FaNotesMedical } from 'react-icons/fa';
 
 export function Homepage() {
   return (
-    <div className="flex bg-background h-screen">
-      <h1>Welcome, (name)!</h1>
-      <ul className="list-none">
-        <li>
-          <CgPill /> Medications
+    <div className="flex flex-col items-center h-screen bg-background">
+      <h1 className="text-2xl mb-4">Welcome, (name)!</h1>
+      <ul className="flex list-none space-x-4">
+        <li className="bg-white">
+          <CgPill className="text-4xl" /> Medications
         </li>
-        <li>
-          <FaThermometerFull /> Symptom Checker
+        <li className="bg-white rounded-3xl border-gray-300">
+          <FaThermometerFull className="text-4xl" /> Symptom Checker
         </li>
-        <li>
-          <FaNotesMedical /> Immunizations
+        <li className="bg-white">
+          <FaNotesMedical className="text-4xl" /> Immunizations
         </li>
-        <li>
-          <HiOutlineEnvelope /> Message
+        <li className="bg-white">
+          <HiOutlineEnvelope className="text-4xl" /> Message
         </li>
-        <li>
-          <LuMapPin /> Nearby Vets
+        <li className="bg-white">
+          <LuMapPin className="text-4xl" /> Nearby Vets
         </li>
-        <li>
-          <LuCalendarDays /> Appointments
+        <li className="bg-white">
+          <LuCalendarDays className="text-4xl" /> Appointments
         </li>
       </ul>
     </div>
