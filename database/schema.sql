@@ -39,6 +39,7 @@ CREATE TABLE "symptomChecker" (
   "symptomId" serial PRIMARY KEY,
   "name" text,
   "diagnosis" text,
+  "sex" text,
   "petId" integer
 );
 

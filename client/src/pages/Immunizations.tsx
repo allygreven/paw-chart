@@ -1,14 +1,18 @@
 export function Immunizations() {
   return (
-    <div className="flex bg-background h-screen font-regular ">
-      <h1 className="font-heading text-2xl">Immunizations</h1>
-      <form className="flex flex-col space-y-4 p-6 max-w-lg mx-auto items-center">
-        <label>Immunization</label>
+    <div className="flex flex-col bg-background h-screen font-regular items-center">
+      <h1 className="font-heading text-2xl mt-6">Immunizations</h1>
+
+      {/* ADD IMMUNIZATION */}
+
+      <form className="flex flex-col space-y-4 p-6 max-w-lg mx-auto ">
+        <label className="mb-2">Immunization</label>
         <select
           id="dropdown"
           // value={selectedOption}
           // onChange={handleChange}
-          required>
+          required
+          className="mt-1 mb-1 block w-80 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none ">
           <option value="Immunizations" disabled>
             -- Select an option --
           </option>
@@ -33,26 +37,32 @@ export function Immunizations() {
           <option value="Option 17">Ringworm</option>
           <option value="Option 18">Other</option>
         </select>
-        <span className="text-xs">
+
+        <span className="text-[7px] mb-0 mt-0">
           *DA2PP: (Distemper, Adenovirus I & II, Parvovirus, Parainfluenza) Also
           referred to as the 5-way vaccine
         </span>
-        <span className="text-xs">
+        <span className="text-[7px] mt-0 mb-6">
           **FVRCP: (Feline Viral Rhinotracheitis, Calicivirus, Panleukopenia,
           and Rabies)
         </span>
-        <label>Date</label>
+
+        <label className="mb-2">Date</label>
         <input
           type="text"
           name="date"
           placeholder="mm/dd/yyyy"
-          className="mt-1 block w-70 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none focus:border-blue-500"></input>
-        <button
-          type="submit"
-          className="w-35 mb-6 bg-[#6A7A62] text-white py-2 px-4 rounded-xl hover:bg-[#8D9F84] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer">
-          Submit
-        </button>
+          className="mt-1 block w-80 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none focus:border-blue-500"></input>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="w-25 mt-4 mb-6 bg-[#6A7A62] text-white py-2 px-4 shadow-lg rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+            Submit
+          </button>
+        </div>
       </form>
+
+      {/* PAST IMMUNIZATIONS */}
 
       <div>
         <h2>Past Immunizations</h2>

@@ -1,7 +1,7 @@
 export function SymptomChecker() {
   return (
-    <div className="flex bg-background h-screen">
-      <h1 className="font-heading">Symptom Checker</h1>
+    <div className="flex flex-col bg-background h-screen font-regular items-center">
+      <h1 className="font-heading text-2xl mt-6">Symptom Checker</h1>
 
       {/* dog or cat */}
 

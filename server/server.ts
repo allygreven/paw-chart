@@ -374,16 +374,16 @@ app.get(
 
 app.post('/api/symptomChecker', authMiddleware, async (req, res, next) => {
   try {
-    const { name, diagnosis } = req.body;
-    if (!name || !diagnosis) {
-      throw new ClientError(400, 'Symptom is required');
+    const { name, diagnosis, sex } = req.body;
+    if (!name || !diagnosis || !sex) {
+      throw new ClientError(400, 'Symptom information is required');
     }
     const sql = `
-      insert into "symptomChecker" ("name", "diagnosis", "petId")
-        values ($1, $2, $3)
+      insert into "symptomChecker" ("name", "diagnosis", "sex", "petId")
+        values ($1, $2, $3, $4)
         returning *
     `;
-    const params = [name, diagnosis, req.user?.userId];
+    const params = [name, diagnosis, sex, req.user?.userId];
     const result = await db.query<SymptomChecker>(sql, params);
     res.status(201).json(result.rows[0]);
   } catch (err) {

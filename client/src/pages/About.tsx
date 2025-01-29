@@ -1,6 +1,6 @@
 export function About() {
   return (
-    <div className="flex bg-background font-grey-body justify-center  h-screen">
+    <div className="flex bg-background color-grey-body justify-center  h-screen">
       <div className="text-center max-w-lg">
         <h1 className="mt-5 font-heading text-3xl">About us</h1>
         <div>
@@ -15,7 +15,7 @@ export function About() {
             information.
           </p>
           <h2 className="mt-9 font-heading text-2xl">Legal Disclaimer</h2>
-          <p className="mt-3 font-regular">
+          <p className="mt-4 font-regular">
             Please note that while PawChart offers valuable insights into your
             pet's health based on symptoms and records, it is not a substitute
             for professional veterinary care. I am not a veterinarian and do not

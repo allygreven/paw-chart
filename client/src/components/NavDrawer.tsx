@@ -23,14 +23,30 @@ export function NavDrawer({ menuItems }: Props) {
 
   return (
     <div>
-      <header className="w-full m-auto bg-gradient-to-r from-[#6A7A62] to-[#B5CCAA] p-5 text-white ">
-        <IoIosMenu onClick={() => setIsOpen(!isOpen)} className="text-4xl" />
+      <header className="w-full m-auto bg-gradient-to-r from-[#6A7A62] to-[#B5CCAA] p-4 text-white">
+        <div className="flex items-center space-x-4">
+          <IoIosMenu
+            onClick={() => setIsOpen(!isOpen)}
+            className="ml-4 text-4xl hover:text-[#E9E9E9] cursor-pointer"
+          />
+
+          {/* LOGO  */}
+
+          <h1 className="ml-8 text-5xl font-logo ">
+            <Link to="/">PawChart</Link>
+          </h1>
+        </div>
+
+        {/* MENU ITEMS */}
+
         {isOpen && (
           <div>
             <ul className="flex flex-col">
               {menuItems.map((menu) => (
                 <li key={menu.name} className="inline-block py-2 px-4">
-                  <Link to={menu.path} className="text-white">
+                  <Link
+                    to={menu.path}
+                    className="text-white hover:text-[#E9E9E9]">
                     <menu.icon />
                     <span>{menu.name}</span>
                   </Link>
@@ -39,9 +55,6 @@ export function NavDrawer({ menuItems }: Props) {
             </ul>
           </div>
         )}
-        <h1 className="flex text-5xl font-logo space-x-4">
-          <Link to="/">PawChart</Link>
-        </h1>
       </header>
 
       <Outlet />
