@@ -19,15 +19,15 @@ export async function readImmunizations(): Promise<Immunization[]> {
   if (!res.ok) {
     throw new Error(`Failed to fetch immunizations. Status: ${res.status}`);
   }
-
   const immunizations = await res.json();
+  console.log(immunizations);
   return immunizations as Immunization[];
 }
 
 export async function readImmunization(
   immunizationId: number
 ): Promise<Immunization | undefined> {
-  const response = await fetch(`/api/immunization/${immunizationId}`, {
+  const response = await fetch(`/api/immunizations/${immunizationId}`, {
     method: 'GET',
     // headers: {
     //   Authorization: `Bearer ${readToken()}`,

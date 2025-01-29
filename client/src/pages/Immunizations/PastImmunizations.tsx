@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Immunization, readImmunizations } from '../../data';
+// import { FaRegTrashCan } from 'react-icons/fa6';
 
 export function PastImmunizations() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,19 +34,27 @@ export function PastImmunizations() {
   return (
     <div>
       <h2>Past Immunizations</h2>
-      <table>
+      <table className="mt-4 m-20 bg-white rounded-xl shadow-lg">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Date</th>
+            <th>NAME</th>
+            <th>DATE</th>
           </tr>
         </thead>
         <tbody>
           {immunizations.map((row) => (
             <tr key={row.immunizationId}>
-              {/* <td>{row.immunizationId}</td> */}
               <td>{row.name}</td>
-              <td>{row.date}</td>
+              <td>
+                {new Date(row.date).toLocaleDateString('en-us', {
+                  month: 'numeric',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </td>
+              {/* <td>
+                <FaRegTrashCan />
+              </td> */}
             </tr>
           ))}
         </tbody>

@@ -212,43 +212,39 @@ app.delete(
  * DELETE an immunization
  */
 
-app.get('/api/immunizations', authMiddleware, async (req, res, next) => {
+app.get('/api/immunizations', async (req, res, next) => {
   try {
     const sql = `
       select *
         from "immunizations"
-        where "petId" = $1;
     `;
-    const result = await db.query<Immunizations>(sql, [req.user?.userId]);
+    const result = await db.query<Immunizations>(sql);
     res.json(result.rows);
+    console.log(result.rows, typeof result.rows[0].date);
   } catch (err) {
     next(err);
   }
 });
 
-app.get(
-  '/api/immunizations/:immunizationId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { immunizationId } = req.params;
-      if (!Number.isInteger(+immunizationId)) {
-        throw new ClientError(400, 'Invalid immunization');
-      }
-      const sql = `
+app.get('/api/immunizations/:immunizationId', async (req, res, next) => {
+  try {
+    const { immunizationId } = req.params;
+    if (!Number.isInteger(+immunizationId)) {
+      throw new ClientError(400, 'Invalid immunization');
+    }
+    const sql = `
       select * from "immunizations"
       where "immunizationId" = $1 and "petId"= $2;
     `;
-      const params = [immunizationId, req.user?.userId];
-      const result = await db.query(sql, params);
-      const immunization = result.rows[0];
-      if (!immunization) throw new ClientError(404, 'Immunization not found');
-      res.json(immunization);
-    } catch (err) {
-      next(err);
-    }
+    const params = [immunizationId];
+    const result = await db.query(sql, params);
+    const immunization = result.rows[0];
+    if (!immunization) throw new ClientError(404, 'Immunization not found');
+    res.json(immunization);
+  } catch (err) {
+    next(err);
   }
-);
+});
 
 app.post('/api/immunizations', authMiddleware, async (req, res, next) => {
   try {

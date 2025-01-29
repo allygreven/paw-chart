@@ -1,5 +1,24 @@
+// import { FormEvent } from "react";
+// import { addImmunization, Immunization } from "../../data";
+
 export function AddImmunizations() {
   return (
+    //   function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    //   try {
+    //     event.preventDefault();
+    //     const formData = new FormData(event.currentTarget);
+    //     const newImmunization = Object.fromEntries(formData) as unknown as Immunization;
+    //     if (isEditing) {
+    //       updateImmunization({ ...immunization, ...newImmunization });
+    //     } else {
+    //       addImmunization(newImmunization);
+    //     }
+    //     navigate('/');
+    //   } catch (error) {
+    //     alert('there was an error updating entry' + error);
+    //   }
+    // }
+
     <form className="flex flex-col space-y-4 p-6 max-w-lg mx-auto ">
       <label className="mb-2">Immunization</label>
       <select
