@@ -111,7 +111,12 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
   }
 });
 
-/// MEDICATIONS
+/** MEDICATIONS
+ * GET all medications
+ * READS a medication
+ * UPDATES a medication
+ * DELETE a medication
+ */
 
 app.get('/api/medications', authMiddleware, async (req, res, next) => {
   try {
@@ -199,7 +204,13 @@ app.delete(
   }
 );
 
-/// IMMUNIZATIONS
+/** IMMUNIZATIONS
+ * GET all immunizations
+ * GET an immunization
+ * READ an immunization
+ * UPDATE an immunization
+ * DELETE an immunization
+ */
 
 app.get('/api/immunizations', authMiddleware, async (req, res, next) => {
   try {
@@ -315,7 +326,13 @@ app.delete(
   }
 );
 
-/// SYMPTOM CHECKER
+/** SYMPTOM CHECKER
+ * GET all symptoms
+ * GET a symptom
+ * READ a symptom
+ * UPDATE a symptom
+ * DELETE a symptom
+ */
 
 app.get('/api/symptomChecker', authMiddleware, async (req, res, next) => {
   try {
@@ -357,16 +374,16 @@ app.get(
 
 app.post('/api/symptomChecker', authMiddleware, async (req, res, next) => {
   try {
-    const { name, diagnosis } = req.body;
-    if (!name || !diagnosis) {
-      throw new ClientError(400, 'Symptom is required');
+    const { name, diagnosis, sex } = req.body;
+    if (!name || !diagnosis || !sex) {
+      throw new ClientError(400, 'Symptom information is required');
     }
     const sql = `
-      insert into "symptomChecker" ("name", "diagnosis", "petId")
-        values ($1, $2, $3)
+      insert into "symptomChecker" ("name", "diagnosis", "sex", "petId")
+        values ($1, $2, $3, $4)
         returning *
     `;
-    const params = [name, diagnosis, req.user?.userId];
+    const params = [name, diagnosis, sex, req.user?.userId];
     const result = await db.query<SymptomChecker>(sql, params);
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -431,7 +448,13 @@ app.delete(
   }
 );
 
-/// INTERACTIONS
+/** INTERACTIONS
+ * GET all medication interactions
+ * GET interaction by medication pair medId1 and medId2 and names
+ * READ medId1 and medId2 interactions
+ * UPDATE medId1 and medId2 to change the interaction and message
+ * DELETE an interaction
+ */
 
 app.get('/api/interactions', authMiddleware, async (req, res, next) => {
   try {
@@ -447,7 +470,34 @@ app.get('/api/interactions', authMiddleware, async (req, res, next) => {
   }
 });
 
-// TODO: GET INTERACTIONS BY MEDICATION PAIR MED ID 1 AND MED ID 2
+app.get(
+  '/api/interactions/:interactionId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { interactionId } = req.params;
+      if (!Number.isInteger(+interactionId)) {
+        throw new ClientError(400, 'Invalid interaction');
+      }
+      const sql = `
+      select "i"."interactionId",
+              "m1"."name" as "med1Name",
+              "m2"."name" as "med2Name"
+      from "interactions" as "i"
+      join "medications" as "m1" on "i"."med1" = "m1"."medId"
+      join "medications" as "m2" on "i"."med2" = "m2"."medId"
+      where "i"."petId" = $1;
+    `;
+      const params = [interactionId, req.user?.userId];
+      const result = await db.query(sql, params);
+      const interaction = result.rows[0];
+      if (!interaction) throw new ClientError(404, 'Interaction not found');
+      res.json(interaction);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 app.post('/api/interactions', authMiddleware, async (req, res, next) => {
   try {
