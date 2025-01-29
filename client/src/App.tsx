@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { Immunizations } from './pages/Immunizations';
+import { Immunizations } from './pages/Immunizations/Immunizations';
 import { Medications } from './pages/Medications/Medications';
 import { SymptomChecker } from './pages/SymptomChecker';
 import { NavDrawer } from './components/NavDrawer';
