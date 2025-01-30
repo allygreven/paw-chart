@@ -32,20 +32,20 @@ export function PastImmunizations() {
   }
 
   return (
-    <div>
-      <h2>Past Immunizations</h2>
-      <table className="mt-4 m-20 bg-white rounded-xl shadow-lg">
+    <div className="flex flex-col items-center">
+      <h2 className="mt-1 mr-60">Past Immunizations</h2>
+      <table className="w-full border-collapse bg-white mt-4 m-20 rounded-xl shadow-lg">
         <thead>
-          <tr>
-            <th>NAME</th>
-            <th>DATE</th>
+          <tr className="border-b border-gray-300">
+            <th className="px-6 py-2 text-left">NAME</th>
+            <th className="px-6 py-2 text-right">DATE</th>
           </tr>
         </thead>
         <tbody>
           {immunizations.map((row) => (
-            <tr key={row.immunizationId}>
-              <td>{row.name}</td>
-              <td>
+            <tr key={row.immunizationId} className="border-b border-gray-200">
+              <td className="px-4 py-2">{row.name}</td>
+              <td className="px-4 py-2 text-right">
                 {new Date(row.date).toLocaleDateString('en-us', {
                   month: 'numeric',
                   day: 'numeric',

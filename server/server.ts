@@ -220,7 +220,6 @@ app.get('/api/immunizations', async (req, res, next) => {
     `;
     const result = await db.query<Immunizations>(sql);
     res.json(result.rows);
-    console.log(result.rows, typeof result.rows[0].date);
   } catch (err) {
     next(err);
   }
@@ -246,20 +245,21 @@ app.get('/api/immunizations/:immunizationId', async (req, res, next) => {
   }
 });
 
-app.post('/api/immunizations', authMiddleware, async (req, res, next) => {
+app.post('/api/immunizations', async (req, res, next) => {
   try {
     const { name, date } = req.body;
     if (!name || !date) {
       throw new ClientError(400, 'Immunization information is required');
     }
     const sql = `
-      insert into "immunization" ("name", "date", "petId")
-        values ($1, $2, $3)
+      insert into "immunizations" ("name", "date")
+        values ($1, $2)
         returning *
     `;
-    const params = [name, date, req.user?.userId];
+    const params = [name, date];
     const result = await db.query<Immunizations>(sql, params);
     res.status(201).json(result.rows[0]);
+    console.log('added immunization');
   } catch (err) {
     next(err);
   }

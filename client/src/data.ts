@@ -20,7 +20,6 @@ export async function readImmunizations(): Promise<Immunization[]> {
     throw new Error(`Failed to fetch immunizations. Status: ${res.status}`);
   }
   const immunizations = await res.json();
-  console.log(immunizations);
   return immunizations as Immunization[];
 }
 
