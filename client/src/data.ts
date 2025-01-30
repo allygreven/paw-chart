@@ -53,21 +53,6 @@ export async function addImmunization(newImmunization: Immunization) {
   return data;
 }
 
-// export async function updateEntry(entry: Entry) {
-//   const response = await fetch(`/api/entries/${entry.entryId}`, {
-//     method: 'PUT',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       // Authorization: `Bearer ${readToken()}`,
-//     },
-//     body: JSON.stringify(entry),
-//   });
-//   if (!response.ok)
-//     throw new Error(`Failed to update entry ${response.status}`);
-//   const data = (await response.json()) as Entry;
-//   return data;
-// }
-
 export async function removeImmunization(immunizationId: number) {
   const response = await fetch(`/api/immunizations/${immunizationId}`, {
     method: 'DELETE',

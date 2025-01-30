@@ -34,27 +34,6 @@ export function PastImmunizations() {
     }
   }
 
-  // async function onDeleteClick(event: Event, immunization: string, date: string) {
-  //   event.preventDefault();
-  //     try {
-  //       const req = {
-  //         method: 'DELETE',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         body: JSON.stringify({
-  //           name: immunization,
-  //           date: date,
-  //         }),
-  //       };
-  //       const res = await fetch('/api/immunizations', req);
-  //       if (!res.ok) {
-  //         throw new Error(`fetch Error ${res.status}`);
-  //       }
-  //       navigate('/immunizations');
-  //     } catch (err) {
-  //       alert(`Error adding immunization: ${err}`);
-  //     }
-  //   }
-
   useEffect(() => {
     async function load() {
       try {

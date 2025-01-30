@@ -209,8 +209,7 @@ app.delete(
 /** IMMUNIZATIONS
  * GET all immunizations
  * GET an immunization
- * READ an immunization
- * UPDATE an immunization
+ * VIEW an immunization
  * DELETE an immunization
  */
 
@@ -269,38 +268,6 @@ app.post('/api/immunizations', async (req, res, next) => {
     next(err);
   }
 });
-
-app.put(
-  '/api/immunizations/:immunizationId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { immunizationId } = req.params;
-      const { name, date } = req.body;
-      if (!name || !date) {
-        throw new ClientError(400, 'Immunization information is required');
-      }
-      if (!Number.isInteger(+immunizationId)) {
-        throw new ClientError(400, 'Invalid immunization');
-      }
-      const sql = `
-      update "immunizations"
-      set "name" = $1, "date" = $2
-      where "immunizationId" = $4 AND "petId" = $5
-      returning *;
-    `;
-      const params = [name, date, immunizationId, req.user?.userId];
-      const result = await db.query(sql, params);
-      const updatedImm = result.rows[0];
-      if (!updatedImm) {
-        throw new ClientError(404, 'Immunization not found');
-      }
-      res.json(updatedImm);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
 
 app.delete('/api/immunizations/:immunizationId', async (req, res, next) => {
   try {
