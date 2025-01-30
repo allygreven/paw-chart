@@ -10,7 +10,7 @@ create schema "public";
 CREATE TABLE "users" (
   "userId" serial PRIMARY KEY,
   "username" text,
-  "hashedPassword" integer
+  "hashedPassword" text
 );
 
 CREATE TABLE "pets" (

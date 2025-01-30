@@ -69,7 +69,7 @@ export async function addImmunization(newImmunization: Immunization) {
 // }
 
 export async function removeImmunization(immunizationId: number) {
-  const response = await fetch(`/api/immunization/${immunizationId}`, {
+  const response = await fetch(`/api/immunizations/${immunizationId}`, {
     method: 'DELETE',
     // headers: {
     //   Authorization: `Bearer ${readToken()}`,
@@ -77,5 +77,4 @@ export async function removeImmunization(immunizationId: number) {
   });
   if (!response.ok)
     throw new Error(`Failed to delete immunization ${response.status}`);
-  return (await response.json()) as Immunization;
 }

@@ -24,7 +24,7 @@ export function AddImmunizations() {
       // const addedImmunizations = await res.json();
       // setImmunization(immunization.concat(addedImmunizations))
       // setImmunization([...immunization, addedImmunizations])
-      navigate('/immunizations');
+      navigate('/');
     } catch (err) {
       alert(`Error adding immunization: ${err}`);
     }

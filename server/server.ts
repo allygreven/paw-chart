@@ -3,6 +3,8 @@ import 'dotenv/config';
 import express from 'express';
 import pg from 'pg';
 import { authMiddleware, ClientError, errorMiddleware } from './lib/index.js';
+import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
 
 type Medication = {
   name: string;
@@ -40,7 +42,7 @@ type Pets = {
 type User = {
   userId: number;
   username: string;
-  hashedPassword: number;
+  hashedPassword: string;
 };
 
 type Auth = {
@@ -251,6 +253,9 @@ app.post('/api/immunizations', async (req, res, next) => {
     if (!name || !date) {
       throw new ClientError(400, 'Immunization information is required');
     }
+    // if (name === name) {
+    //   throw new ClientError(403, 'Immunization already exists')
+    // }
     const sql = `
       insert into "immunizations" ("name", "date")
         values ($1, $2)
@@ -297,30 +302,26 @@ app.put(
   }
 );
 
-app.delete(
-  '/api/immunizations/:immunizationId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { immunizationId } = req.params;
-      if (!immunizationId) {
-        throw new ClientError(400, 'Invalid immunization');
-      }
-      const sql = `
+app.delete('/api/immunizations/:immunizationId', async (req, res, next) => {
+  try {
+    const { immunizationId } = req.params;
+    if (!immunizationId) {
+      throw new ClientError(400, 'Invalid immunization');
+    }
+    const sql = `
       delete from "immunizations"
-      where "immunizationId" = $1 and "petId"= $2
+      where "immunizationId" = $1
       returning *
     `;
-      const result = await db.query(sql, [immunizationId, req.user?.userId]);
-      if (result.rowCount === 0) {
-        throw new ClientError(404, 'Immunization not found');
-      }
-      res.sendStatus(204);
-    } catch (err) {
-      next(err);
+    const result = await db.query(sql, [immunizationId]);
+    if (result.rowCount === 0) {
+      throw new ClientError(404, 'Immunization not found');
     }
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
   }
-);
+});
 
 /** SYMPTOM CHECKER
  * GET all symptoms

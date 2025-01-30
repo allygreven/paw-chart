@@ -1,11 +1,59 @@
 import { useEffect, useState } from 'react';
-import { Immunization, readImmunizations } from '../../data';
-// import { FaRegTrashCan } from 'react-icons/fa6';
+import {
+  Immunization,
+  readImmunizations,
+  removeImmunization,
+} from '../../data';
+import { FaRegTrashCan } from 'react-icons/fa6';
+import { EditModal } from './EditModal';
+import { useNavigate } from 'react-router-dom';
 
 export function PastImmunizations() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
   const [immunizations, setImmunizations] = useState<Immunization[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [deletingImmunization, setDeletingImmunization] =
+    useState<Immunization>();
+
+  const navigate = useNavigate();
+
+  async function handleDelete() {
+    try {
+      if (!deletingImmunization?.immunizationId)
+        throw new Error('Should never happen');
+      await removeImmunization(deletingImmunization.immunizationId);
+
+      alert('Immunization deleted!');
+      setIsOpen(false);
+      setDeletingImmunization(undefined);
+      navigate('/');
+    } catch (error) {
+      alert('there was an error deleting entry' + error);
+    }
+  }
+
+  // async function onDeleteClick(event: Event, immunization: string, date: string) {
+  //   event.preventDefault();
+  //     try {
+  //       const req = {
+  //         method: 'DELETE',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({
+  //           name: immunization,
+  //           date: date,
+  //         }),
+  //       };
+  //       const res = await fetch('/api/immunizations', req);
+  //       if (!res.ok) {
+  //         throw new Error(`fetch Error ${res.status}`);
+  //       }
+  //       navigate('/immunizations');
+  //     } catch (err) {
+  //       alert(`Error adding immunization: ${err}`);
+  //     }
+  //   }
 
   useEffect(() => {
     async function load() {
@@ -52,13 +100,53 @@ export function PastImmunizations() {
                   year: 'numeric',
                 })}
               </td>
-              {/* <td>
-                <FaRegTrashCan />
-              </td> */}
+              <td>
+                <FaRegTrashCan
+                  style={{ color: 'red', cursor: 'pointer', fontSize: '18px' }}
+                  onClick={() => {
+                    setIsOpen(true);
+                    setDeletingImmunization(row);
+                  }}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* MODAL TO DELETE IMMUNIZATION */}
+
+      <EditModal
+        className="m-auto bg-background font-regular rounded-2xl backdrop:bg-black/50 shadow-lg top-2 mx-auto"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}>
+        <div className="flex flex-col items-center">
+          <span className="mt-12 font-heading text-xl">
+            Are you sure you want to delete?
+          </span>
+          <span className="mt-3 ml-3 mr-3  text-left">
+            This item will be deleted immediately.
+          </span>
+          <span className="mt-.5 mb-6 ">You can’t undo this action.</span>
+          <div className="modal-actions">
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                setDeletingImmunization(undefined);
+              }}
+              className="w-25 mb-12 m-3 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                await handleDelete();
+              }}
+              className="w-25 mb-12 m-3 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+              Delete
+            </button>
+          </div>
+        </div>
+      </EditModal>
     </div>
   );
 }
