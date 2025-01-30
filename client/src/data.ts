@@ -19,7 +19,6 @@ export async function readImmunizations(): Promise<Immunization[]> {
   if (!res.ok) {
     throw new Error(`Failed to fetch immunizations. Status: ${res.status}`);
   }
-
   const immunizations = await res.json();
   return immunizations as Immunization[];
 }
@@ -27,7 +26,7 @@ export async function readImmunizations(): Promise<Immunization[]> {
 export async function readImmunization(
   immunizationId: number
 ): Promise<Immunization | undefined> {
-  const response = await fetch(`/api/immunization/${immunizationId}`, {
+  const response = await fetch(`/api/immunizations/${immunizationId}`, {
     method: 'GET',
     // headers: {
     //   Authorization: `Bearer ${readToken()}`,
@@ -54,23 +53,8 @@ export async function addImmunization(newImmunization: Immunization) {
   return data;
 }
 
-// export async function updateEntry(entry: Entry) {
-//   const response = await fetch(`/api/entries/${entry.entryId}`, {
-//     method: 'PUT',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       // Authorization: `Bearer ${readToken()}`,
-//     },
-//     body: JSON.stringify(entry),
-//   });
-//   if (!response.ok)
-//     throw new Error(`Failed to update entry ${response.status}`);
-//   const data = (await response.json()) as Entry;
-//   return data;
-// }
-
 export async function removeImmunization(immunizationId: number) {
-  const response = await fetch(`/api/immunization/${immunizationId}`, {
+  const response = await fetch(`/api/immunizations/${immunizationId}`, {
     method: 'DELETE',
     // headers: {
     //   Authorization: `Bearer ${readToken()}`,
@@ -78,5 +62,4 @@ export async function removeImmunization(immunizationId: number) {
   });
   if (!response.ok)
     throw new Error(`Failed to delete immunization ${response.status}`);
-  return (await response.json()) as Immunization;
 }

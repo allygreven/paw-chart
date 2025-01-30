@@ -3,6 +3,8 @@ import 'dotenv/config';
 import express from 'express';
 import pg from 'pg';
 import { authMiddleware, ClientError, errorMiddleware } from './lib/index.js';
+import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
 
 type Medication = {
   name: string;
@@ -40,7 +42,7 @@ type Pets = {
 type User = {
   userId: number;
   username: string;
-  hashedPassword: number;
+  hashedPassword: string;
 };
 
 type Auth = {
@@ -207,124 +209,86 @@ app.delete(
 /** IMMUNIZATIONS
  * GET all immunizations
  * GET an immunization
- * READ an immunization
- * UPDATE an immunization
+ * VIEW an immunization
  * DELETE an immunization
  */
 
-app.get('/api/immunizations', authMiddleware, async (req, res, next) => {
+app.get('/api/immunizations', async (req, res, next) => {
   try {
     const sql = `
       select *
         from "immunizations"
-        where "petId" = $1;
     `;
-    const result = await db.query<Immunizations>(sql, [req.user?.userId]);
+    const result = await db.query<Immunizations>(sql);
     res.json(result.rows);
   } catch (err) {
     next(err);
   }
 });
 
-app.get(
-  '/api/immunizations/:immunizationId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { immunizationId } = req.params;
-      if (!Number.isInteger(+immunizationId)) {
-        throw new ClientError(400, 'Invalid immunization');
-      }
-      const sql = `
+app.get('/api/immunizations/:immunizationId', async (req, res, next) => {
+  try {
+    const { immunizationId } = req.params;
+    if (!Number.isInteger(+immunizationId)) {
+      throw new ClientError(400, 'Invalid immunization');
+    }
+    const sql = `
       select * from "immunizations"
       where "immunizationId" = $1 and "petId"= $2;
     `;
-      const params = [immunizationId, req.user?.userId];
-      const result = await db.query(sql, params);
-      const immunization = result.rows[0];
-      if (!immunization) throw new ClientError(404, 'Immunization not found');
-      res.json(immunization);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
-app.post('/api/immunizations', authMiddleware, async (req, res, next) => {
-  try {
-    const { name, date } = req.body;
-    if (!name || !date) {
-      throw new ClientError(400, 'Immunization information is required');
-    }
-    const sql = `
-      insert into "immunization" ("name", "date", "petId")
-        values ($1, $2, $3)
-        returning *
-    `;
-    const params = [name, date, req.user?.userId];
-    const result = await db.query<Immunizations>(sql, params);
-    res.status(201).json(result.rows[0]);
+    const params = [immunizationId];
+    const result = await db.query(sql, params);
+    const immunization = result.rows[0];
+    if (!immunization) throw new ClientError(404, 'Immunization not found');
+    res.json(immunization);
   } catch (err) {
     next(err);
   }
 });
 
-app.put(
-  '/api/immunizations/:immunizationId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { immunizationId } = req.params;
-      const { name, date } = req.body;
-      if (!name || !date) {
-        throw new ClientError(400, 'Immunization information is required');
-      }
-      if (!Number.isInteger(+immunizationId)) {
-        throw new ClientError(400, 'Invalid immunization');
-      }
-      const sql = `
-      update "immunizations"
-      set "name" = $1, "date" = $2
-      where "immunizationId" = $4 AND "petId" = $5
-      returning *;
-    `;
-      const params = [name, date, immunizationId, req.user?.userId];
-      const result = await db.query(sql, params);
-      const updatedImm = result.rows[0];
-      if (!updatedImm) {
-        throw new ClientError(404, 'Immunization not found');
-      }
-      res.json(updatedImm);
-    } catch (err) {
-      next(err);
+app.post('/api/immunizations', async (req, res, next) => {
+  try {
+    const { name, date } = req.body;
+    if (!name || !date) {
+      throw new ClientError(400, 'Immunization information is required');
     }
+    // if (name === name) {
+    //   throw new ClientError(403, 'Immunization already exists')
+    // }
+    const sql = `
+      insert into "immunizations" ("name", "date")
+        values ($1, $2)
+        returning *
+    `;
+    const params = [name, date];
+    const result = await db.query<Immunizations>(sql, params);
+    res.status(201).json(result.rows[0]);
+    console.log('added immunization');
+  } catch (err) {
+    next(err);
   }
-);
+});
 
-app.delete(
-  '/api/immunizations/:immunizationId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { immunizationId } = req.params;
-      if (!immunizationId) {
-        throw new ClientError(400, 'Invalid immunization');
-      }
-      const sql = `
+app.delete('/api/immunizations/:immunizationId', async (req, res, next) => {
+  try {
+    const { immunizationId } = req.params;
+    if (!immunizationId) {
+      throw new ClientError(400, 'Invalid immunization');
+    }
+    const sql = `
       delete from "immunizations"
-      where "immunizationId" = $1 and "petId"= $2
+      where "immunizationId" = $1
       returning *
     `;
-      const result = await db.query(sql, [immunizationId, req.user?.userId]);
-      if (result.rowCount === 0) {
-        throw new ClientError(404, 'Immunization not found');
-      }
-      res.sendStatus(204);
-    } catch (err) {
-      next(err);
+    const result = await db.query(sql, [immunizationId]);
+    if (result.rowCount === 0) {
+      throw new ClientError(404, 'Immunization not found');
     }
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
   }
-);
+});
 
 /** SYMPTOM CHECKER
  * GET all symptoms
