@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export function AddImmunizations() {
   const [immunization, setImmunization] = useState('');
   const [date, setDate] = useState('');
+
   const navigate = useNavigate();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {

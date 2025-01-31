@@ -1,18 +1,19 @@
-// import { CurrentMeds } from './Accordion';
+import { Medication } from '../../data';
 
-// type Props = {
-//   med: CurrentMeds;
-//   isOpen: boolean;
-//   onClick: () => void;
-// };
+type Props = {
+  med: Medication;
+  isOpen: boolean;
+  onClick: () => void;
+};
 
-// export function CurrentMeds({ med, isOpen, onClick }: Props) {
-//   return (
-//     <div className="med">
-//       <div onClick={onClick} className="name">
-//         <h3>{med.name}</h3>
-//       </div>
-//       {isOpen && <div className="dose">{med.dose}</div>}
-//     </div>
-//   );
-// }
+export function CurrentMeds({ med, isOpen, onClick }: Props) {
+  return (
+    <div className="med">
+      <div onClick={onClick} className="name">
+        <span>{med.name}</span>
+        <span>{med.dose}</span>
+      </div>
+      {isOpen && <div className="directions">{med.directions}</div>}
+    </div>
+  );
+}

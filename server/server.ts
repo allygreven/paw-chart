@@ -120,31 +120,51 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
  * DELETE a medication
  */
 
-app.get('/api/medications', authMiddleware, async (req, res, next) => {
+app.get('/api/medications', async (req, res, next) => {
   try {
     const sql = `
       select *
         from "medications";
     `;
-    const result = await db.query<Medication>(sql, [req.user?.userId]);
+    const result = await db.query<Medication>(sql);
     res.json(result.rows);
   } catch (err) {
     next(err);
   }
 });
 
-app.post('/api/medications', authMiddleware, async (req, res, next) => {
+app.get('/api/medications/:medId', async (req, res, next) => {
+  try {
+    const { medId } = req.params;
+    if (!Number.isInteger(+medId)) {
+      throw new ClientError(400, 'Invalid medication');
+    }
+    const sql = `
+      select * from "medications"
+      where "medId" = $1
+    `;
+    const params = [medId];
+    const result = await db.query(sql, params);
+    const med = result.rows[0];
+    if (!med) throw new ClientError(404, 'Medication not found');
+    res.json(med);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/medications', async (req, res, next) => {
   try {
     const { name, dose } = req.body;
     if (!name || !dose) {
       throw new ClientError(400, 'Medication information is required');
     }
     const sql = `
-      insert into "medications" ("name", "dose", "petId")
-        values ($1, $2, $3)
+      insert into "medications" ("name", "dose")
+        values ($1, $2)
         returning *
     `;
-    const params = [name, dose, req.user?.userId];
+    const params = [name, dose];
     const result = await db.query<Medication>(sql, params);
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -152,7 +172,7 @@ app.post('/api/medications', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.put('/api/medications/:medId', authMiddleware, async (req, res, next) => {
+app.put('/api/medications/:medId', async (req, res, next) => {
   try {
     const { medId } = req.params;
     const { name, dose } = req.body;
@@ -165,10 +185,10 @@ app.put('/api/medications/:medId', authMiddleware, async (req, res, next) => {
     const sql = `
       update "medications"
       set "name" = $1, "dose" = $2
-      where "medId" = $4 and "petId" = $5
+      where "medId" = $4
       returning *;
     `;
-    const params = [name, dose, medId, req.user?.userId];
+    const params = [name, dose, medId];
 
     const result = await db.query(sql, params);
     const updatedMed = result.rows[0];
@@ -181,30 +201,26 @@ app.put('/api/medications/:medId', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.delete(
-  '/api/medications/:medId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { medId } = req.params;
-      if (!medId) {
-        throw new ClientError(400, 'Invalid medication');
-      }
-      const sql = `
+app.delete('/api/medications/:medId', async (req, res, next) => {
+  try {
+    const { medId } = req.params;
+    if (!medId) {
+      throw new ClientError(400, 'Invalid medication');
+    }
+    const sql = `
       delete from "medications"
-      where "medId" = $1 and "petId"= $2
+      where "medId" = $1
       returning *
     `;
-      const result = await db.query(sql, [medId, req.user?.userId]);
-      if (result.rowCount === 0) {
-        throw new ClientError(404, 'Medication not found');
-      }
-      res.sendStatus(204);
-    } catch (err) {
-      next(err);
+    const result = await db.query(sql, [medId]);
+    if (result.rowCount === 0) {
+      throw new ClientError(404, 'Medication not found');
     }
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
   }
-);
+});
 
 /** IMMUNIZATIONS
  * GET all immunizations
