@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 type Medication = {
   name: string;
   dose: string;
+  directions: string;
   medId: number;
 };
 
@@ -155,16 +156,16 @@ app.get('/api/medications/:medId', async (req, res, next) => {
 
 app.post('/api/medications', async (req, res, next) => {
   try {
-    const { name, dose } = req.body;
+    const { name, dose, directions } = req.body;
     if (!name || !dose) {
       throw new ClientError(400, 'Medication information is required');
     }
     const sql = `
-      insert into "medications" ("name", "dose")
+      insert into "medications" ("name", "dose", "directions")
         values ($1, $2)
         returning *
     `;
-    const params = [name, dose];
+    const params = [name, dose, directions];
     const result = await db.query<Medication>(sql, params);
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -175,7 +176,7 @@ app.post('/api/medications', async (req, res, next) => {
 app.put('/api/medications/:medId', async (req, res, next) => {
   try {
     const { medId } = req.params;
-    const { name, dose } = req.body;
+    const { name, dose, directions } = req.body;
     if (!name || !dose) {
       throw new ClientError(400, 'Medication information is required');
     }
@@ -184,11 +185,11 @@ app.put('/api/medications/:medId', async (req, res, next) => {
     }
     const sql = `
       update "medications"
-      set "name" = $1, "dose" = $2
+      set "name" = $1, "dose" = $2, "directions" = $3
       where "medId" = $4
       returning *;
     `;
-    const params = [name, dose, medId];
+    const params = [name, dose, directions, medId];
 
     const result = await db.query(sql, params);
     const updatedMed = result.rows[0];

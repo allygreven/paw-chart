@@ -1,7 +1,7 @@
 import { Accordion } from './Accordion';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { MedsModal } from './MedsModal';
-import { addMed, Medication } from '../../data';
+import { addMed, Medication, readMeds } from '../../data';
 // import { useNavigate } from 'react-router-dom';
 
 export function Medications() {
@@ -10,6 +10,8 @@ export function Medications() {
   const [medication, setMedication] = useState('');
   const [dose, setDose] = useState('');
   const [directions, setDirections] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown>();
 
   // const navigate = useNavigate();
 
@@ -32,6 +34,30 @@ export function Medications() {
     } catch (err) {
       alert(`Error adding medication: ${err}`);
     }
+  }
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const medications = await readMeds();
+        setMedications(medications);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    return (
+      <div>
+        Error Loading Entries:
+        {error instanceof Error ? error.message : 'Unknown Error'}
+      </div>
+    );
   }
 
   return (

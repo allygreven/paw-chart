@@ -25,6 +25,7 @@ CREATE TABLE "medications" (
   "medId" serial PRIMARY KEY,
   "name" text,
   "dose" text,
+  "directions" text,
   "petId" integer
 );
 
