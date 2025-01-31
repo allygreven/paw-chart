@@ -162,7 +162,7 @@ app.post('/api/medications', async (req, res, next) => {
     }
     const sql = `
       insert into "medications" ("name", "dose", "directions")
-        values ($1, $2)
+        values ($1, $2, $3)
         returning *
     `;
     const params = [name, dose, directions];

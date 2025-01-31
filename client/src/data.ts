@@ -118,6 +118,21 @@ export async function addMed(newMed: Medication) {
   return data;
 }
 
+export async function updateMed(med: Medication) {
+  const response = await fetch(`/api/medications/${med.medId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      // Authorization: `Bearer ${readToken()}`,
+    },
+    body: JSON.stringify(med),
+  });
+  if (!response.ok)
+    throw new Error(`Failed to update medication ${response.status}`);
+  const data = (await response.json()) as Medication;
+  return data;
+}
+
 export async function removeMed(medId: number) {
   const response = await fetch(`/api/medications/${medId}`, {
     method: 'DELETE',
