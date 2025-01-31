@@ -114,7 +114,7 @@ export function Medications() {
       {/* CURRENT MEDICATIONS */}
 
       <div>
-        <h2 className="font-heading text-xl mt-5">Current Medications</h2>
+        <h2 className="font-heading text-xl mt-5 mb-3">Current Medications</h2>
         <Accordion meds={medications} />
       </div>
     </div>

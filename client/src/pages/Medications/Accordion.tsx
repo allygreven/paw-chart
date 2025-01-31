@@ -10,7 +10,7 @@ export function Accordion({ meds }: Props) {
   const [medId, setMedId] = useState<number>();
 
   return (
-    <div>
+    <div className="bg-white shadow-lg font-regular">
       {meds.map((med) => (
         <CurrentMeds
           key={med.medId}
