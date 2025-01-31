@@ -7,8 +7,6 @@ type Props = {
   className: string;
 };
 
-// ADD THIS MODAL ON TO THE ACCORDION COMPONENT
-
 export function DeleteModal({ children, onClose, isOpen }: Props) {
   const modal = useRef<HTMLDialogElement>(null);
 

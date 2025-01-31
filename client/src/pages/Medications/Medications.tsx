@@ -117,6 +117,11 @@ export function Medications() {
         <h2 className="font-heading text-xl mt-5 mb-3">Current Medications</h2>
         <Accordion meds={medications} />
       </div>
+
+      {/* INTERACTIONS */}
+      <div>
+        <h2 className="font-heading text-xl mr-70">Interactions</h2>
+      </div>
     </div>
   );
 }
