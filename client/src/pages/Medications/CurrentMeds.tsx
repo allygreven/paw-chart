@@ -47,8 +47,8 @@ export function CurrentMeds({ med, isOpen, onClick }: Props) {
     }
   }
 
-  async function handleDeleteMed(event: FormEvent) {
-    event.preventDefault();
+  async function handleDeleteMed() {
+    // event.preventDefault();
     try {
       if (!deleteMed?.medId) throw new Error('Should never happen');
       await removeMed(deleteMed.medId);
