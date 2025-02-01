@@ -197,6 +197,7 @@ app.put('/api/medications/:medId', async (req, res, next) => {
       throw new ClientError(404, 'Medication not found');
     }
     res.json(updatedMed);
+    console.log('response sent');
   } catch (err) {
     next(err);
   }

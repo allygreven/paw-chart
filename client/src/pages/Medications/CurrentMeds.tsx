@@ -1,9 +1,10 @@
-import { Medication, removeMed } from '../../data';
+import { Medication, removeMed, updateMed } from '../../data';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { FiEdit } from 'react-icons/fi';
 import { DeleteModal } from './DeleteModal';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
+import { EditMedsModal } from './EditMedsModal';
 // import { useNavigate } from 'react-router-dom';
 // import { IoChevronUpOutline } from 'react-icons/io5';
 
@@ -16,9 +17,38 @@ type Props = {
 export function CurrentMeds({ med, isOpen, onClick }: Props) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteMed, setDeleteMed] = useState<Medication>();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editMed, setEditMed] = useState<Medication>();
+  const [editMedName, setEditMedName] = useState('');
+  const [editDose, setEditDose] = useState('');
+  const [editDir, setEditDir] = useState('');
   // const navigate = useNavigate();
 
-  async function handleDeleteMed() {
+  async function handleEditMed(event: FormEvent) {
+    event.preventDefault();
+    try {
+      if (!editMed) throw new Error('Should never happen');
+
+      const updatedMed = {
+        ...editMed,
+        name: editMedName,
+        dose: editDose,
+        directions: editDir,
+      };
+
+      const savedMed = await updateMed(updatedMed);
+
+      alert('Medication updated!');
+      setIsEditOpen(false);
+      setEditMed(undefined);
+      // navigate('/medications');
+    } catch (error) {
+      alert('there was an error updating medication' + error);
+    }
+  }
+
+  async function handleDeleteMed(event: FormEvent) {
+    event.preventDefault();
     try {
       if (!deleteMed?.medId) throw new Error('Should never happen');
       await removeMed(deleteMed.medId);
@@ -33,31 +63,78 @@ export function CurrentMeds({ med, isOpen, onClick }: Props) {
   }
 
   return (
-    <div className="mb-3 border-b border-gray-300">
+    <div className="mb-3 border-b border-gray-300 ">
       <div
         onClick={onClick}
-        className="cursor-pointer inline-flex  items-center max-w-lg">
+        className="cursor-pointer flex items-center w-full">
         <span className="ml-4 mb-4 mt-4">{med.name}</span>
         <span className="ml-6 text-gray-500">{med.dose}</span>
-        <div className="ml-auto text-gray-500">
-          <IoChevronDownOutline />
-        </div>
+        <IoChevronDownOutline className="ml-auto mr-3 text-gray-500" />
       </div>
       {isOpen && (
-        <div className="ml-6 mr-5 text-gray-500 border border-gray-300 border-dashed p-1 flex">
+        <div className="flex ml-6 mr-5 text-gray-500 border border-gray-300 border-dashed p-1 ">
           {med.directions}
           {/* <IoChevronUpOutline /> */}
-          <FiEdit className="cursor-pointer" />
-          <FaRegTrashCan
-            className="cursor-pointer"
+          <FiEdit
+            className="cursor-pointer ml-auto text-md"
             onClick={() => {
-              console.log('clicked!');
+              setIsEditOpen(true);
+              setEditMed(med);
+              setEditMedName(med.name);
+              setEditDose(med.dose);
+              setEditDir(med.directions);
+            }}
+          />
+          <FaRegTrashCan
+            className="cursor-pointer ml-2 text-md"
+            onClick={() => {
               setIsDeleteOpen(true);
               setDeleteMed(med);
             }}
           />
         </div>
       )}
+
+      {/* EDIT MEDICATION MODAL */}
+
+      <EditMedsModal
+        className="bg-background rounded-2xl backdrop:bg-black/50 shadow-lg top-2 mx-auto"
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}>
+        <form onSubmit={handleEditMed} className="m-20 font-regular">
+          <h1 className="font-heading text-2xl ml-2 mb-8">Edit Medication</h1>
+          <label>Medication Name</label>
+          <input
+            value={editMedName}
+            onChange={(e) => setEditMedName(e.target.value)}
+            required
+            type="text"
+            placeholder="Search"
+            className="mt-2 block w-85 mb-6 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
+          <label>Dosage</label>
+          <input
+            value={editDose}
+            onChange={(e) => setEditDose(e.target.value)}
+            required
+            type="text"
+            placeholder="Type here"
+            className="mt-2 block w-85 mb-6 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
+          <label>Directions</label>
+          <input
+            type="text"
+            value={editDir}
+            onChange={(e) => setEditDir(e.target.value)}
+            placeholder="Not required"
+            className="mt-2 block w-85 mb-12 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="flex justify-center w-25 mb-6 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+              Submit
+            </button>
+          </div>
+        </form>
+      </EditMedsModal>
 
       {/* DELETE MEDICATION MODAL */}
 
