@@ -13,7 +13,6 @@ export function PastImmunizations() {
   const [error, setError] = useState<unknown>();
   const [immunizations, setImmunizations] = useState<Immunization[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-
   const [deletingImmunization, setDeletingImmunization] =
     useState<Immunization>();
 
@@ -30,7 +29,7 @@ export function PastImmunizations() {
       setDeletingImmunization(undefined);
       navigate('/');
     } catch (error) {
-      alert('there was an error deleting entry' + error);
+      alert('there was an error deleting immunization' + error);
     }
   }
 
@@ -81,7 +80,11 @@ export function PastImmunizations() {
               </td>
               <td>
                 <FaRegTrashCan
-                  style={{ color: 'red', cursor: 'pointer', fontSize: '18px' }}
+                  style={{
+                    color: 'grey',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                  }}
                   onClick={() => {
                     setIsOpen(true);
                     setDeletingImmunization(row);

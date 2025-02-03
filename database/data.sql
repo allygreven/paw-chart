@@ -4,6 +4,6 @@ insert into "immunizations"
   ('Parvovirus', '2020-02-14');
 
 insert into "medications"
-  ("name", "dose")
-  values ('Tramadol', '5 mg/kg'),
-  ('Prednisone', '0.5 mg/kg')
+  ("name", "dose", "directions")
+  values ('Tramadol', '5 mg/kg', '1 capsule two to three times daily or every eight hours'),
+  ('Prednisone', '0.5 mg/kg', 'Once daily at same time of day')

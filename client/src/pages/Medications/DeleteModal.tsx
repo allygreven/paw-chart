@@ -7,9 +7,7 @@ type Props = {
   className: string;
 };
 
-// ADD THIS MODAL ON TO THE ACCORDION COMPONENT
-
-export function DeleteModal({ children, onClose, isOpen }: Props) {
+export function DeleteModal({ children, onClose, isOpen, className }: Props) {
   const modal = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -21,7 +19,7 @@ export function DeleteModal({ children, onClose, isOpen }: Props) {
   }, [isOpen]);
 
   return (
-    <dialog ref={modal} onClose={onClose}>
+    <dialog ref={modal} onClose={onClose} className={className}>
       {children}
     </dialog>
   );

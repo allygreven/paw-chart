@@ -7,7 +7,7 @@ type Props = {
   className: string;
 };
 
-export function EditModal({ children, onClose, isOpen, className }: Props) {
+export function EditMedsModal({ children, onClose, isOpen, className }: Props) {
   const modal = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
