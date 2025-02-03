@@ -2,7 +2,6 @@ import { Accordion } from './Accordion';
 import { FormEvent, useEffect, useState } from 'react';
 import { MedsModal } from './MedsModal';
 import { addMed, Medication, readMeds } from '../../data';
-// import { useNavigate } from 'react-router-dom';
 
 export function Medications() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +11,6 @@ export function Medications() {
   const [directions, setDirections] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
-
-  // const navigate = useNavigate();
 
   async function handleAdd(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -30,7 +27,6 @@ export function Medications() {
       setDose('');
       setDirections('');
       setIsOpen(false);
-      // navigate('/medications');
     } catch (err) {
       alert(`Error adding medication: ${err}`);
     }
@@ -58,6 +54,16 @@ export function Medications() {
         {error instanceof Error ? error.message : 'Unknown Error'}
       </div>
     );
+  }
+
+  async function handleUpdate(med: Medication) {
+    setMedications((prevMeds) =>
+      prevMeds.map((m) => (m.medId === med.medId ? med : m))
+    );
+  }
+
+  async function handleDelete(med: Medication) {
+    setMedications((prevMeds) => prevMeds.filter((m) => m.medId !== med.medId));
   }
 
   return (
@@ -127,7 +133,11 @@ export function Medications() {
           <h2 className="font-heading text-xl mt-5 mb-3">
             Current Medications
           </h2>
-          <Accordion meds={medications} />
+          <Accordion
+            meds={medications}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+          />
         </div>
 
         {/* INTERACTIONS */}

@@ -4,9 +4,11 @@ import { Medication } from '../../data';
 
 type Props = {
   meds: Medication[];
+  onUpdate: (med: Medication) => void;
+  onDelete: (med: Medication) => void;
 };
 
-export function Accordion({ meds }: Props) {
+export function Accordion({ meds, onUpdate, onDelete }: Props) {
   const [medId, setMedId] = useState<number>();
 
   return (
@@ -16,9 +18,11 @@ export function Accordion({ meds }: Props) {
           key={med.medId}
           med={med}
           isOpen={medId === med.medId}
-          onClick={() =>
+          onOpen={() =>
             medId === med.medId ? setMedId(undefined) : setMedId(med.medId)
           }
+          onUpdate={onUpdate}
+          onDelete={onDelete}
         />
       ))}
     </div>

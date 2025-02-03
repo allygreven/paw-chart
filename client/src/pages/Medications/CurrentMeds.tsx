@@ -5,16 +5,23 @@ import { FiEdit } from 'react-icons/fi';
 import { DeleteModal } from './DeleteModal';
 import { FormEvent, useState } from 'react';
 import { EditMedsModal } from './EditMedsModal';
-// import { useNavigate } from 'react-router-dom';
 // import { IoChevronUpOutline } from 'react-icons/io5';
 
 type Props = {
   med: Medication;
   isOpen: boolean;
-  onClick: () => void;
+  onOpen: () => void;
+  onUpdate: (med: Medication) => void;
+  onDelete: (med: Medication) => void;
 };
 
-export function CurrentMeds({ med, isOpen, onClick }: Props) {
+export function CurrentMeds({
+  med,
+  isOpen,
+  onOpen,
+  onUpdate,
+  onDelete,
+}: Props) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteMed, setDeleteMed] = useState<Medication>();
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -22,7 +29,6 @@ export function CurrentMeds({ med, isOpen, onClick }: Props) {
   const [editMedName, setEditMedName] = useState('');
   const [editDose, setEditDose] = useState('');
   const [editDir, setEditDir] = useState('');
-  // const navigate = useNavigate();
 
   async function handleEditMed(event: FormEvent) {
     event.preventDefault();
@@ -41,7 +47,7 @@ export function CurrentMeds({ med, isOpen, onClick }: Props) {
       alert('Medication updated!');
       setIsEditOpen(false);
       setEditMed(undefined);
-      // navigate('/medications');
+      onUpdate(savedMed);
     } catch (error) {
       alert('there was an error updating medication' + error);
     }
@@ -56,7 +62,7 @@ export function CurrentMeds({ med, isOpen, onClick }: Props) {
       alert('Medication deleted!');
       setIsDeleteOpen(false);
       setDeleteMed(undefined);
-      // navigate('/medications');
+      onDelete(deleteMed);
     } catch (error) {
       alert('there was an error deleting medication' + error);
     }
@@ -64,9 +70,7 @@ export function CurrentMeds({ med, isOpen, onClick }: Props) {
 
   return (
     <div className="mb-3 border-b border-gray-300 ">
-      <div
-        onClick={onClick}
-        className="cursor-pointer flex items-center w-full">
+      <div onClick={onOpen} className="cursor-pointer flex items-center w-full">
         <span className="ml-4 mb-4 mt-4">{med.name}</span>
         <span className="ml-6 text-gray-500">{med.dose}</span>
         <IoChevronDownOutline className="ml-auto mr-3 text-gray-500" />
@@ -128,8 +132,17 @@ export function CurrentMeds({ med, isOpen, onClick }: Props) {
             className="mt-2 block w-85 mb-12 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
           <div className="flex justify-center">
             <button
+              type="button"
+              onClick={() => {
+                setIsEditOpen(false);
+              }}
+              className="w-25 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+              Cancel
+            </button>
+
+            <button
               type="submit"
-              className="flex justify-center w-25 mb-6 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+              className="flex justify-center w-25  bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
               Submit
             </button>
           </div>
