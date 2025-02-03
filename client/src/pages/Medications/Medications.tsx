@@ -102,10 +102,19 @@ export function Medications() {
               onChange={(e) => setDirections(e.target.value)}
               placeholder="Not required"
               className="mt-2 block w-85 mb-12 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
-            <div className="flex justify-center">
+
+            <div className="flex justify-center space-x-4 mt-4">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+                className="w-25 mb-1 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+                Cancel
+              </button>
+
               <button
                 type="submit"
-                className="flex justify-center w-25 mb-6 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+                className="w-25 mb-1 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
                 Submit
               </button>
             </div>

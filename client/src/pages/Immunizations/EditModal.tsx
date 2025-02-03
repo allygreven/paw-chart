@@ -12,10 +12,8 @@ export function EditModal({ children, onClose, isOpen, className }: Props) {
 
   useEffect(() => {
     if (isOpen) {
-      console.log('opening', modal.current);
       modal.current?.showModal();
     } else {
-      console.log('closing', modal.current);
       modal.current?.close();
     }
   }, [isOpen]);
