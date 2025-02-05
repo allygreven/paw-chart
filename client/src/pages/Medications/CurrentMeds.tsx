@@ -130,7 +130,7 @@ export function CurrentMeds({
             onChange={(e) => setEditDir(e.target.value)}
             placeholder="Not required"
             className="mt-2 block w-85 mb-12 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
-          <div className="flex justify-center">
+          <div className="flex justify-center space-x-4">
             <button
               type="button"
               onClick={() => {

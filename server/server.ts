@@ -574,7 +574,8 @@ app.delete(
 
 app.get('/api/compare', async (req, res, next) => {
   try {
-    // Format the prompt for comparison
+    //  query for the medications in handleaddmeds
+
     const prompt = [
       {
         role: 'developer',
@@ -590,10 +591,12 @@ app.get('/api/compare', async (req, res, next) => {
 
 
       Provide a brief analysis of their interactions.
+      ONLY display the "moderate" and "high" severity interactions.
       Do not include a disclaimer.
       Do not include any links.
+      add a '+' in between the two medication names
       Only include the medication's name, not their usage.
-      Only display the "moderate" and "high" severity interactions.
+      Don't label the "analysis" or label "severity" just write it under the names of the medications along with their severity
           `,
           },
         ],
