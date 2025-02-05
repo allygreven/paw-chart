@@ -5,6 +5,7 @@ import pg from 'pg';
 import { authMiddleware, ClientError, errorMiddleware } from './lib/index.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
 
 type Medication = {
   name: string;
@@ -62,6 +63,11 @@ const db = new pg.Pool({
     rejectUnauthorized: false,
   },
 });
+
+// const configuration = new Configuration({
+//   apiKey: process.env.MY_API_KEY, // Store your API key securely
+// });
+// const openai = new OpenAIApi(configuration);
 
 const app = express();
 app.use(express.json());
@@ -445,7 +451,7 @@ app.get('/api/interactions', authMiddleware, async (req, res, next) => {
         from "interactions"
         where "petId" = $1;
     `;
-    const result = await db.query<Interactions>(sql, [req.user?.userId]);
+    const result = await db.query<Interactions>(sql);
     res.json(result.rows);
   } catch (err) {
     next(err);
@@ -500,7 +506,6 @@ app.post('/api/interactions', authMiddleware, async (req, res, next) => {
   }
 });
 
-/// change medID to med NAME!!!!!!!
 app.put(
   '/api/interactions/:interactionId',
   authMiddleware,
@@ -564,6 +569,89 @@ app.delete(
     }
   }
 );
+
+// OPENAI API
+
+app.get('/api/compare', async (req, res, next) => {
+  try {
+    //  query for the medications in handleaddmeds
+
+    const sql = `
+      select "name"
+        from "medications"
+    `;
+    const result = await db.query<any>(sql);
+
+    const medication = result.rows.map((med): any => med.name).join(', ');
+
+    // turn this into a string and put into prompt
+
+    const prompt = [
+      {
+        role: 'developer',
+        content: [
+          {
+            type: 'text',
+            text: `
+             Compare the following two medications and the severity of their interaction ("High", "Moderate", "Low"),
+      you're a veterinary web application factually informing a patient, either canine or feline, their medication interactions
+      based on what medications they are taking from this list:
+
+      ${medication}
+
+      Provide a brief analysis of their interactions.
+      ONLY display the "moderate" and "high" severity interactions.
+      Do not include a disclaimer.
+      Do not include any links.
+      add a '+' in between the two medication names.
+      Only include the medication's name, not their usage.
+      Don't label the "analysis" or label "severity" just write it under the names of the medications along with their severity and along with the very brief summary
+          `,
+          },
+        ],
+      },
+    ];
+
+    // Make the API request to OpenAI
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-4o-mini', // Or another model like GPT-4
+        messages: prompt,
+        max_tokens: 150, // Adjust as needed
+        temperature: 0.1,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.MY_API_KEY}`,
+        },
+      }
+    );
+
+    // {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${process.env.MY_API_KEY}`,
+    //   },
+    //   body: JSON.stringify({
+    //     model: 'gpt-4o-mini', // Or another model like GPT-4
+    //     messages: prompt,
+    //     max_tokens: 150, // Adjust as needed
+    //     temperature: 0.1,
+    //   }),
+    // });
+
+    // const data = await response.json();
+    // if (!response.ok) {
+    //   return res.status(response.status).json(data);
+    // }
+    res.json(response.data.choices[0].message.content);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Create paths for static directories
 const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
