@@ -451,7 +451,7 @@ app.get('/api/interactions', authMiddleware, async (req, res, next) => {
         from "interactions"
         where "petId" = $1;
     `;
-    const result = await db.query<Interactions>(sql, [req.user?.userId]);
+    const result = await db.query<Interactions>(sql);
     res.json(result.rows);
   } catch (err) {
     next(err);
@@ -576,6 +576,16 @@ app.get('/api/compare', async (req, res, next) => {
   try {
     //  query for the medications in handleaddmeds
 
+    const sql = `
+      select "name"
+        from "medications"
+    `;
+    const result = await db.query<any>(sql);
+
+    const medication = result.rows.map((med): any => med.name).join(', ');
+
+    // turn this into a string and put into prompt
+
     const prompt = [
       {
         role: 'developer',
@@ -587,7 +597,9 @@ app.get('/api/compare', async (req, res, next) => {
       you're a veterinary web application factually informing a patient, either canine or feline, their medication interactions
       based on what medications they are taking from this list:
 
-      -prednisone, tramadol, penicillin
+${medication}
+
+
 
 
       Provide a brief analysis of their interactions.
@@ -596,7 +608,7 @@ app.get('/api/compare', async (req, res, next) => {
       Do not include any links.
       add a '+' in between the two medication names
       Only include the medication's name, not their usage.
-      Don't label the "analysis" or label "severity" just write it under the names of the medications along with their severity
+      Don't label the "analysis" or label "severity" just write it under the names of the medications along with their severity and along with the very brief summary
           `,
           },
         ],
