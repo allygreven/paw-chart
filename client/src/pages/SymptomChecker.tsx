@@ -80,7 +80,7 @@ export function SymptomChecker() {
         </label>
 
         <label>
-          <input type="checkbox" />
+          <input type="text" placeholder="other" />
         </label>
       </div>
     </div>

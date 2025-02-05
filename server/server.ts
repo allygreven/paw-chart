@@ -597,16 +597,13 @@ app.get('/api/compare', async (req, res, next) => {
       you're a veterinary web application factually informing a patient, either canine or feline, their medication interactions
       based on what medications they are taking from this list:
 
-${medication}
-
-
-
+      ${medication}
 
       Provide a brief analysis of their interactions.
       ONLY display the "moderate" and "high" severity interactions.
       Do not include a disclaimer.
       Do not include any links.
-      add a '+' in between the two medication names
+      add a '+' in between the two medication names.
       Only include the medication's name, not their usage.
       Don't label the "analysis" or label "severity" just write it under the names of the medications along with their severity and along with the very brief summary
           `,
