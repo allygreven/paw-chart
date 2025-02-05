@@ -2,6 +2,7 @@ import { Accordion } from './Accordion';
 import { FormEvent, useEffect, useState } from 'react';
 import { MedsModal } from './MedsModal';
 import { addMed, Medication, readMeds } from '../../data';
+import { Interactions } from '../Interactions';
 
 export function Medications() {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,7 +74,7 @@ export function Medications() {
         <button
           onClick={() => setIsOpen(true)}
           type="button"
-          className="w-70 mb-6 bg-[#6A7A62] font-regular text-white py-2 px-4 shadow-lg rounded-xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+          className="w-70 mb-6 bg-[#6A7A62] font-regular text-white py-2 px-4 shadow-lg rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
           Add a Medication
         </button>
 
@@ -91,7 +92,7 @@ export function Medications() {
               onChange={(e) => setMedication(e.target.value)}
               required
               type="text"
-              placeholder="Search"
+              placeholder="Medication"
               className="mt-2 block w-85 mb-6 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
             <label>Dosage</label>
             <input
@@ -142,7 +143,7 @@ export function Medications() {
 
         {/* INTERACTIONS */}
         <div>
-          <h2 className="font-heading text-xl mr-70">Interactions</h2>
+          <Interactions />
         </div>
       </div>
     </div>

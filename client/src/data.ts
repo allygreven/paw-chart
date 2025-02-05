@@ -143,3 +143,17 @@ export async function removeMed(medId: number) {
   if (!response.ok)
     throw new Error(`Failed to delete medication ${response.status}`);
 }
+
+// OPENAI
+
+export async function readInteraction(): Promise<string> {
+  const response = await fetch('/api/compare', {
+    method: 'GET',
+    headers: {
+      // Authorization: `Bearer ${readToken()}`,
+    },
+  });
+  if (!response.ok) throw new Error(`response status ${response.status}`);
+  const data = (await response.json()) as string;
+  return data;
+}

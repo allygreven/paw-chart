@@ -33,7 +33,14 @@ export function NavDrawer({ menuItems }: Props) {
           {/* LOGO  */}
 
           <h1 className="ml-8 text-5xl font-logo ">
-            <Link to="/">PawChart</Link>
+            <Link to="/" className="flex items-center">
+              PawChart
+              <img
+                src="/images/vecteezy_paw-icon-set-black-icon-png-transparent_9664031.png"
+                alt="paw prints"
+                className="w-15"
+              />
+            </Link>
           </h1>
         </div>
 
@@ -46,7 +53,8 @@ export function NavDrawer({ menuItems }: Props) {
                 <li key={menu.name} className="inline-block py-2 px-4">
                   <Link
                     to={menu.path}
-                    className="text-white hover:text-[#E9E9E9]">
+                    className="text-white hover:text-[#E9E9E9]"
+                    onClick={() => setIsOpen(false)}>
                     <menu.icon />
                     <span>{menu.name}</span>
                   </Link>

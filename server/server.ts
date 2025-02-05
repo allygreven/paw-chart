@@ -5,6 +5,7 @@ import pg from 'pg';
 import { authMiddleware, ClientError, errorMiddleware } from './lib/index.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
 
 type Medication = {
   name: string;
@@ -62,6 +63,11 @@ const db = new pg.Pool({
     rejectUnauthorized: false,
   },
 });
+
+// const configuration = new Configuration({
+//   apiKey: process.env.MY_API_KEY, // Store your API key securely
+// });
+// const openai = new OpenAIApi(configuration);
 
 const app = express();
 app.use(express.json());
@@ -500,7 +506,6 @@ app.post('/api/interactions', authMiddleware, async (req, res, next) => {
   }
 });
 
-/// change medID to med NAME!!!!!!!
 app.put(
   '/api/interactions/:interactionId',
   authMiddleware,
@@ -564,6 +569,77 @@ app.delete(
     }
   }
 );
+
+// OPENAI API
+
+app.get('/api/compare', async (req, res, next) => {
+  try {
+    // Format the prompt for comparison
+    const prompt = [
+      {
+        role: 'developer',
+        content: [
+          {
+            type: 'text',
+            text: `
+             Compare the following two medications and the severity of their interaction ("High", "Moderate", "Low"),
+      you're a veterinary web application factually informing a patient, either canine or feline, their medication interactions
+      based on what medications they are taking from this list:
+
+      -prednisone, tramadol, penicillin
+
+
+      Provide a brief analysis of their interactions.
+      Do not include a disclaimer.
+      Do not include any links.
+      Only include the medication's name, not their usage.
+      Only display the "moderate" and "high" severity interactions.
+          `,
+          },
+        ],
+      },
+    ];
+
+    // Make the API request to OpenAI
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-4o-mini', // Or another model like GPT-4
+        messages: prompt,
+        max_tokens: 150, // Adjust as needed
+        temperature: 0.1,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.MY_API_KEY}`,
+        },
+      }
+    );
+
+    // {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${process.env.MY_API_KEY}`,
+    //   },
+    //   body: JSON.stringify({
+    //     model: 'gpt-4o-mini', // Or another model like GPT-4
+    //     messages: prompt,
+    //     max_tokens: 150, // Adjust as needed
+    //     temperature: 0.1,
+    //   }),
+    // });
+
+    // const data = await response.json();
+    // if (!response.ok) {
+    //   return res.status(response.status).json(data);
+    // }
+    res.json(response.data.choices[0].message.content);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Create paths for static directories
 const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
