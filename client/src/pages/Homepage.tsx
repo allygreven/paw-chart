@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom';
 
 export function Homepage() {
   return (
-    <div className="flex flex-col items-center bg-background">
+    <div className="flex flex-col items-center bg-background text-grey-body">
       <h1 className="mt-8 text-2xl mb-4">Welcome, (name)!</h1>
       <ul className="mt-8 flex list-none space-x-4 ">
         <li>
           <button
             type="button"
-            className="w-full mb-6 bg-white color-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
+            className="w-full mb-6 bg-white text-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
             <Link to="/medications" className="flex flex-col p-2 items-center ">
               <CgPill className="text-4xl" />
               <span>Medications</span>
@@ -25,7 +25,7 @@ export function Homepage() {
         <li>
           <button
             type="button"
-            className="w-full mb-6 bg-white color-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
+            className="w-full mb-6 bg-white text-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
             <Link
               to="/symptom-checker"
               className="flex flex-col p-2 items-center ">
@@ -38,7 +38,7 @@ export function Homepage() {
         <li>
           <button
             type="button"
-            className="w-full mb-6 bg-white color-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
+            className="w-full mb-6 bg-white text-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
             <Link
               to="/immunizations"
               className="flex flex-col p-2 items-center ">
@@ -51,7 +51,7 @@ export function Homepage() {
         <li>
           <button
             type="button"
-            className="w-full mb-6 bg-white color-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
+            className="w-full mb-6 bg-white text-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
             <Link to="/message" className="flex flex-col p-2 items-center ">
               <HiOutlineEnvelope className="text-4xl" />
               <span>Message</span>
@@ -62,7 +62,7 @@ export function Homepage() {
         <li>
           <button
             type="button"
-            className="w-full mb-6 bg-white color-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
+            className="w-full mb-6 bg-white text-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
             <Link to="/nearby" className="flex flex-col p-2 items-center ">
               <LuMapPin className="text-4xl" />
               <span>Nearby Vets</span>
@@ -73,7 +73,7 @@ export function Homepage() {
         <li>
           <button
             type="button"
-            className=" w-full mb-6 bg-white color-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
+            className=" w-full mb-6 bg-white text-grey-body text-md py-1 rounded-3xl hover:bg-[#EEEDE8] shadow-md focus:outline-none cursor-pointer">
             <Link
               to="/appointments"
               className="flex flex-col p-2 items-center ">

@@ -26,13 +26,13 @@ type SymptomChecker = {
   symptomId: number;
 };
 
-type Interactions = {
-  interactionId: number;
-  risk: string;
-  description: string;
-  medId1: number;
-  medId2: number;
-};
+// type Interactions = {
+//   interactionId: number;
+//   risk: string;
+//   description: string;
+//   medId1: number;
+//   medId2: number;
+// };
 
 type Pets = {
   petId: number;
@@ -86,7 +86,8 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
       values ($1, $2)
       returning "userId", "username";
     `;
-    const result = await db.query<User>(sql, [username, hashedPassword]);
+    const params = [username, hashedPassword];
+    const result = await db.query<User>(sql, params);
     res.status(201).json(result.rows[0]);
   } catch (err) {
     next(err);
@@ -106,7 +107,8 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
         from "users"
        where "username" = $1;
     `;
-    const result = await db.query<User>(sql, [username]);
+    const params = [username];
+    const result = await db.query<User>(sql, params);
     const user = result.rows[0];
     if (!user) throw new ClientError(401, 'Invalid login');
     const { userId, hashedPassword } = user;
@@ -127,20 +129,20 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
  * DELETE a medication
  */
 
-app.get('/api/medications', async (req, res, next) => {
+app.get('/api/medications', authMiddleware, async (req, res, next) => {
   try {
     const sql = `
       select *
         from "medications";
     `;
-    const result = await db.query<Medication>(sql);
+    const result = await db.query<Medication>(sql, [req.user?.userId]);
     res.json(result.rows);
   } catch (err) {
     next(err);
   }
 });
 
-app.get('/api/medications/:medId', async (req, res, next) => {
+app.get('/api/medications/:medId', authMiddleware, async (req, res, next) => {
   try {
     const { medId } = req.params;
     if (!Number.isInteger(+medId)) {
@@ -150,7 +152,7 @@ app.get('/api/medications/:medId', async (req, res, next) => {
       select * from "medications"
       where "medId" = $1
     `;
-    const params = [medId];
+    const params = [medId, req.user?.userId];
     const result = await db.query(sql, params);
     const med = result.rows[0];
     if (!med) throw new ClientError(404, 'Medication not found');
@@ -160,7 +162,7 @@ app.get('/api/medications/:medId', async (req, res, next) => {
   }
 });
 
-app.post('/api/medications', async (req, res, next) => {
+app.post('/api/medications', authMiddleware, async (req, res, next) => {
   try {
     const { name, dose, directions } = req.body;
     if (!name || !dose) {
@@ -171,7 +173,7 @@ app.post('/api/medications', async (req, res, next) => {
         values ($1, $2, $3)
         returning *
     `;
-    const params = [name, dose, directions];
+    const params = [name, dose, directions, req.user?.userId];
     const result = await db.query<Medication>(sql, params);
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -179,7 +181,7 @@ app.post('/api/medications', async (req, res, next) => {
   }
 });
 
-app.put('/api/medications/:medId', async (req, res, next) => {
+app.put('/api/medications/:medId', authMiddleware, async (req, res, next) => {
   try {
     const { medId } = req.params;
     const { name, dose, directions } = req.body;
@@ -195,7 +197,7 @@ app.put('/api/medications/:medId', async (req, res, next) => {
       where "medId" = $4
       returning *;
     `;
-    const params = [name, dose, directions, medId];
+    const params = [name, dose, directions, medId, req.user?.userId];
 
     const result = await db.query(sql, params);
     const updatedMed = result.rows[0];
@@ -209,26 +211,30 @@ app.put('/api/medications/:medId', async (req, res, next) => {
   }
 });
 
-app.delete('/api/medications/:medId', async (req, res, next) => {
-  try {
-    const { medId } = req.params;
-    if (!medId) {
-      throw new ClientError(400, 'Invalid medication');
-    }
-    const sql = `
+app.delete(
+  '/api/medications/:medId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { medId } = req.params;
+      if (!medId) {
+        throw new ClientError(400, 'Invalid medication');
+      }
+      const sql = `
       delete from "medications"
       where "medId" = $1
       returning *
     `;
-    const result = await db.query(sql, [medId]);
-    if (result.rowCount === 0) {
-      throw new ClientError(404, 'Medication not found');
+      const result = await db.query(sql, [medId, req.user?.userId]);
+      if (result.rowCount === 0) {
+        throw new ClientError(404, 'Medication not found');
+      }
+      res.sendStatus(204);
+    } catch (err) {
+      next(err);
     }
-    res.sendStatus(204);
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 /** IMMUNIZATIONS
  * GET all immunizations
@@ -237,13 +243,13 @@ app.delete('/api/medications/:medId', async (req, res, next) => {
  * DELETE an immunization
  */
 
-app.get('/api/immunizations', async (req, res, next) => {
+app.get('/api/immunizations', authMiddleware, async (req, res, next) => {
   try {
     const sql = `
       select *
         from "immunizations"
     `;
-    const result = await db.query<Immunizations>(sql);
+    const result = await db.query<Immunizations>(sql, [req.user?.userId]);
     res.json(result.rows);
   } catch (err) {
     next(err);
@@ -260,7 +266,7 @@ app.get('/api/immunizations/:immunizationId', async (req, res, next) => {
       select * from "immunizations"
       where "immunizationId" = $1 and "petId"= $2;
     `;
-    const params = [immunizationId];
+    const params = [immunizationId, req.user?.userId];
     const result = await db.query(sql, params);
     const immunization = result.rows[0];
     if (!immunization) throw new ClientError(404, 'Immunization not found');
@@ -270,7 +276,7 @@ app.get('/api/immunizations/:immunizationId', async (req, res, next) => {
   }
 });
 
-app.post('/api/immunizations', async (req, res, next) => {
+app.post('/api/immunizations', authMiddleware, async (req, res, next) => {
   try {
     const { name, date } = req.body;
     if (!name || !date) {
@@ -284,7 +290,7 @@ app.post('/api/immunizations', async (req, res, next) => {
         values ($1, $2)
         returning *
     `;
-    const params = [name, date];
+    const params = [name, date, req.user?.userId];
     const result = await db.query<Immunizations>(sql, params);
     res.status(201).json(result.rows[0]);
     console.log('added immunization');
@@ -293,26 +299,30 @@ app.post('/api/immunizations', async (req, res, next) => {
   }
 });
 
-app.delete('/api/immunizations/:immunizationId', async (req, res, next) => {
-  try {
-    const { immunizationId } = req.params;
-    if (!immunizationId) {
-      throw new ClientError(400, 'Invalid immunization');
-    }
-    const sql = `
+app.delete(
+  '/api/immunizations/:immunizationId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { immunizationId } = req.params;
+      if (!immunizationId) {
+        throw new ClientError(400, 'Invalid immunization');
+      }
+      const sql = `
       delete from "immunizations"
       where "immunizationId" = $1
       returning *
     `;
-    const result = await db.query(sql, [immunizationId]);
-    if (result.rowCount === 0) {
-      throw new ClientError(404, 'Immunization not found');
+      const result = await db.query(sql, [immunizationId, req.user?.userId]);
+      if (result.rowCount === 0) {
+        throw new ClientError(404, 'Immunization not found');
+      }
+      res.sendStatus(204);
+    } catch (err) {
+      next(err);
     }
-    res.sendStatus(204);
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 /** SYMPTOM CHECKER
  * GET all symptoms
@@ -436,145 +446,12 @@ app.delete(
   }
 );
 
-/** INTERACTIONS
- * GET all medication interactions
- * GET interaction by medication pair medId1 and medId2 and names
- * READ medId1 and medId2 interactions
- * UPDATE medId1 and medId2 to change the interaction and message
- * DELETE an interaction
- */
-
-app.get('/api/interactions', authMiddleware, async (req, res, next) => {
-  try {
-    const sql = `
-      select *
-        from "interactions"
-        where "petId" = $1;
-    `;
-    const result = await db.query<Interactions>(sql);
-    res.json(result.rows);
-  } catch (err) {
-    next(err);
-  }
-});
-
-app.get(
-  '/api/interactions/:interactionId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { interactionId } = req.params;
-      if (!Number.isInteger(+interactionId)) {
-        throw new ClientError(400, 'Invalid interaction');
-      }
-      const sql = `
-      select "i"."interactionId",
-              "m1"."name" as "med1Name",
-              "m2"."name" as "med2Name"
-      from "interactions" as "i"
-      join "medications" as "m1" on "i"."med1" = "m1"."medId"
-      join "medications" as "m2" on "i"."med2" = "m2"."medId"
-      where "i"."petId" = $1;
-    `;
-      const params = [interactionId, req.user?.userId];
-      const result = await db.query(sql, params);
-      const interaction = result.rows[0];
-      if (!interaction) throw new ClientError(404, 'Interaction not found');
-      res.json(interaction);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
-app.post('/api/interactions', authMiddleware, async (req, res, next) => {
-  try {
-    const { risk, description, medId1, medId2 } = req.body;
-    if (!risk || !description || !medId1 || !medId2) {
-      throw new ClientError(400, 'Interaction is required');
-    }
-    const sql = `
-      insert into "interactions" ("risk", "description", "medId1", "medId2", "petId")
-        values ($1, $2, $3, $4, $5)
-        returning *
-    `;
-    const params = [risk, description, medId1, medId2, req.user?.userId];
-    const result = await db.query<Interactions>(sql, params);
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    next(err);
-  }
-});
-
-app.put(
-  '/api/interactions/:interactionId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { interactionId } = req.params;
-      const { risk, description, medId1, medId2 } = req.body;
-      if (!risk || !description || !medId1 || !medId2) {
-        throw new ClientError(400, 'Interaction information is required');
-      }
-      if (!Number.isInteger(+interactionId)) {
-        throw new ClientError(400, 'Invalid interaction');
-      }
-      const sql = `
-      update "interactions"
-      set "risk" = $1, "description" = $2, "medId" = $3, "medId2" = $4
-      where "interactionId" = $5 and "petId" = $6
-      returning *;
-    `;
-      const params = [
-        risk,
-        description,
-        medId1,
-        medId2,
-        interactionId,
-        req.user?.userId,
-      ];
-      const result = await db.query(sql, params);
-      const updatedInteraction = result.rows[0];
-      if (!updatedInteraction) {
-        throw new ClientError(404, 'Interaction not found');
-      }
-      res.json(updatedInteraction);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
-app.delete(
-  '/api/interactions/:interactionId',
-  authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { interactionId } = req.params;
-      if (!interactionId) {
-        throw new ClientError(400, 'Invalid interaction');
-      }
-      const sql = `
-      delete from "interactions"
-      where "interactionId" = $1 and "petId"= $2
-      returning *
-    `;
-      const result = await db.query(sql, [interactionId, req.user?.userId]);
-      if (result.rowCount === 0) {
-        throw new ClientError(404, 'Interaction not found');
-      }
-      res.sendStatus(204);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
 // OPENAI API
+// OPEN AI INTERACTIONS
 
 app.get('/api/compare', async (req, res, next) => {
   try {
-    //  query for the medications in handleaddmeds
+    //  query for the medications in readmeds
 
     const sql = `
       select "name"
@@ -582,7 +459,9 @@ app.get('/api/compare', async (req, res, next) => {
     `;
     const result = await db.query<any>(sql);
 
-    const medication = result.rows.map((med): any => med.name).join(', ');
+    const medication = result.rows
+      .map((med: { name: string }): any => med.name)
+      .join(', ');
 
     // turn this into a string and put into prompt
 
@@ -629,29 +508,145 @@ app.get('/api/compare', async (req, res, next) => {
       }
     );
 
-    // {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${process.env.MY_API_KEY}`,
-    //   },
-    //   body: JSON.stringify({
-    //     model: 'gpt-4o-mini', // Or another model like GPT-4
-    //     messages: prompt,
-    //     max_tokens: 150, // Adjust as needed
-    //     temperature: 0.1,
-    //   }),
-    // });
-
-    // const data = await response.json();
-    // if (!response.ok) {
-    //   return res.status(response.status).json(data);
-    // }
     res.json(response.data.choices[0].message.content);
   } catch (err) {
     next(err);
   }
 });
+
+/** INTERACTIONS
+ * GET all medication interactions
+ * GET interaction by medication pair medId1 and medId2 and names
+ * READ medId1 and medId2 interactions
+ * UPDATE medId1 and medId2 to change the interaction and message
+ * DELETE an interaction
+ */
+
+// app.get('/api/interactions', authMiddleware, async (req, res, next) => {
+//   try {
+//     const sql = `
+//       select *
+//         from "interactions"
+//         where "petId" = $1;
+//     `;
+//     const result = await db.query<Interactions>(sql);
+//     res.json(result.rows);
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
+// app.get(
+//   '/api/interactions/:interactionId',
+//   authMiddleware,
+//   async (req, res, next) => {
+//     try {
+//       const { interactionId } = req.params;
+//       if (!Number.isInteger(+interactionId)) {
+//         throw new ClientError(400, 'Invalid interaction');
+//       }
+//       const sql = `
+//       select "i"."interactionId",
+//               "m1"."name" as "med1Name",
+//               "m2"."name" as "med2Name"
+//       from "interactions" as "i"
+//       join "medications" as "m1" on "i"."med1" = "m1"."medId"
+//       join "medications" as "m2" on "i"."med2" = "m2"."medId"
+//       where "i"."petId" = $1;
+//     `;
+//       const params = [interactionId, req.user?.userId];
+//       const result = await db.query(sql, params);
+//       const interaction = result.rows[0];
+//       if (!interaction) throw new ClientError(404, 'Interaction not found');
+//       res.json(interaction);
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
+
+// app.post('/api/interactions', authMiddleware, async (req, res, next) => {
+//   try {
+//     const { risk, description, medId1, medId2 } = req.body;
+//     if (!risk || !description || !medId1 || !medId2) {
+//       throw new ClientError(400, 'Interaction is required');
+//     }
+//     const sql = `
+//       insert into "interactions" ("risk", "description", "medId1", "medId2", "petId")
+//         values ($1, $2, $3, $4, $5)
+//         returning *
+//     `;
+//     const params = [risk, description, medId1, medId2, req.user?.userId];
+//     const result = await db.query<Interactions>(sql, params);
+//     res.status(201).json(result.rows[0]);
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
+// app.put(
+//   '/api/interactions/:interactionId',
+//   authMiddleware,
+//   async (req, res, next) => {
+//     try {
+//       const { interactionId } = req.params;
+//       const { risk, description, medId1, medId2 } = req.body;
+//       if (!risk || !description || !medId1 || !medId2) {
+//         throw new ClientError(400, 'Interaction information is required');
+//       }
+//       if (!Number.isInteger(+interactionId)) {
+//         throw new ClientError(400, 'Invalid interaction');
+//       }
+//       const sql = `
+//       update "interactions"
+//       set "risk" = $1, "description" = $2, "medId" = $3, "medId2" = $4
+//       where "interactionId" = $5 and "petId" = $6
+//       returning *;
+//     `;
+//       const params = [
+//         risk,
+//         description,
+//         medId1,
+//         medId2,
+//         interactionId,
+//         req.user?.userId,
+//       ];
+//       const result = await db.query(sql, params);
+//       const updatedInteraction = result.rows[0];
+//       if (!updatedInteraction) {
+//         throw new ClientError(404, 'Interaction not found');
+//       }
+//       res.json(updatedInteraction);
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
+
+// app.delete(
+//   '/api/interactions/:interactionId',
+//   authMiddleware,
+//   async (req, res, next) => {
+//     try {
+//       const { interactionId } = req.params;
+//       if (!interactionId) {
+//         throw new ClientError(400, 'Invalid interaction');
+//       }
+//       const sql = `
+//       delete from "interactions"
+//       where "interactionId" = $1 and "petId"= $2
+//       returning *
+//     `;
+//       const result = await db.query(sql, [interactionId, req.user?.userId]);
+//       if (result.rowCount === 0) {
+//         throw new ClientError(404, 'Interaction not found');
+//       }
+//       res.sendStatus(204);
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
 
 // Create paths for static directories
 const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;

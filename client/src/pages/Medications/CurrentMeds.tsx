@@ -69,7 +69,7 @@ export function CurrentMeds({
   }
 
   return (
-    <div className="mb-3 border-b border-gray-300 ">
+    <div className="mb-3 border-b border-gray-300 text-grey-body">
       <div onClick={onOpen} className="cursor-pointer flex items-center w-full">
         <span className="ml-4 mb-4 mt-4">{med.name}</span>
         <span className="ml-6 text-gray-500">{med.dose}</span>

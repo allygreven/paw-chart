@@ -70,7 +70,7 @@ export function Medications() {
   return (
     <div>
       <div className="flex flex-col items-center text-grey-body bg-background">
-        <h1 className="font-heading text-2xl mt-6 mb-7">Medications</h1>
+        <h1 className="font-heading text-2xl mt-6 mb-7 ">Medications</h1>
         <button
           onClick={() => setIsOpen(true)}
           type="button"

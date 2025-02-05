@@ -4,8 +4,6 @@ import { Medications } from './pages/Medications/Medications';
 import { SymptomChecker } from './pages/SymptomChecker';
 import { NavDrawer } from './components/NavDrawer';
 import { Homepage } from './pages/Homepage';
-import { Register } from './pages/Register';
-import { SignIn } from './pages/SignIn';
 import { NotFound } from './pages/NotFound';
 import { About } from './pages/About';
 import { IoHome } from 'react-icons/io5';
@@ -13,6 +11,7 @@ import { CgPill } from 'react-icons/cg';
 import { FaNotesMedical, FaThermometerFull } from 'react-icons/fa';
 import { GoInfo } from 'react-icons/go';
 import { PiSignOut } from 'react-icons/pi';
+import { AuthPage } from './pages/AuthPage';
 
 const menuItems = [
   { name: 'Home', icon: IoHome, path: '/' },
@@ -31,8 +30,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<NavDrawer menuItems={menuItems} />}>
-        <Route path="sign-in" element={<SignIn />} />
-        <Route path="register" element={<Register />} />
+        <Route path="sign-in" element={<AuthPage mode="sign-in" />} />
+        <Route path="register" element={<AuthPage mode="register" />} />
         <Route index element={<Homepage />} />
         <Route path="immunizations" element={<Immunizations />} />
         <Route path="medications" element={<Medications />} />
