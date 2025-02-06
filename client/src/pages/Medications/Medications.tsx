@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { MedsModal } from "./MedsModal";
 import { addMed, Medication, readMeds } from "../../data";
 import { Interactions } from "./Interactions";
+import { useUser } from "../../components/useUser";
 
 export function Medications() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,14 +13,19 @@ export function Medications() {
   const [directions, setDirections] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
+  const { user } = useUser();
 
   async function handleAdd(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!user) {
+      throw new Error("not signed in");
+    }
     try {
       const newMedication = {
         name: medication,
         dose: dose,
         directions: directions,
+        petId: user.pets[0].petId,
       };
       const newMed = await addMed(newMedication);
 
@@ -36,7 +42,10 @@ export function Medications() {
   useEffect(() => {
     async function load() {
       try {
-        const medications = await readMeds();
+        if (!user) {
+          throw new Error("not signed in");
+        }
+        const medications = await readMeds(user.pets[0].petId);
         setMedications(medications);
       } catch (err) {
         setError(err);
@@ -45,7 +54,7 @@ export function Medications() {
       }
     }
     load();
-  }, []);
+  }, [user]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) {

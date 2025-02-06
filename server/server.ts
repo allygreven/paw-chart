@@ -45,6 +45,7 @@ type User = {
   userId: number;
   username: string;
   hashedPassword: string;
+  pets: Pets[];
 };
 
 type Auth = {
@@ -80,6 +81,10 @@ app.post("/api/auth/sign-up", async (req, res, next) => {
     if (!username || !password) {
       throw new ClientError(400, "Username and password are required fields");
     }
+    const { name, type, age } = req.body;
+    if (!name || !type || !age) {
+      throw new ClientError(400, "Pet information required");
+    }
     const hashedPassword = await argon2.hash(password);
     const sql = `
       insert into "users" ("username", "hashedPassword")
@@ -90,17 +95,13 @@ app.post("/api/auth/sign-up", async (req, res, next) => {
     const result = await db.query<User>(sql, params);
     const user = result.rows[0];
 
-    const { petId, name, type, age } = req.body;
-    if (!petId || !name || !type || !age) {
-      throw new ClientError(400, "Pet information required");
-    }
     const sql2 = `
-      insert into "pet" ("petId", "name", "type", "age")
+      insert into "pets" ("name", "type", "age", "userId")
       values ($1, $2, $3, $4)
       returning *
     `;
-    const params2 = [petId, name, type, age, user.userId];
-    const result2 = await db.query<Pets>(sql2, params2);
+    const params2 = [name, type, age, user.userId];
+    await db.query<Pets>(sql2, params2);
 
     res.status(201).json(user);
   } catch (err) {
@@ -128,7 +129,18 @@ app.post("/api/auth/sign-in", async (req, res, next) => {
     const { userId, hashedPassword } = user;
     if (!(await argon2.verify(hashedPassword, password)))
       throw new ClientError(401, "Invalid login");
-    const payload = { userId, username };
+    const sql2 = `
+    select *
+    from "pets"
+    where "userId" = $1;
+    `;
+    const params2 = [userId];
+    const result2 = await db.query<Pets>(sql2, params2);
+    const pets = result2.rows;
+
+    user.pets = pets;
+
+    const payload = { ...user, hashedPassword: undefined };
     const token = jwt.sign(payload, hashKey);
     res.json({ user: payload, token });
   } catch (err) {
@@ -143,51 +155,57 @@ app.post("/api/auth/sign-in", async (req, res, next) => {
  * DELETE a medication
  */
 
-app.get("/api/medications", authMiddleware, async (req, res, next) => {
+app.get("/api/medications/:petId", authMiddleware, async (req, res, next) => {
   try {
+    const { petId } = req.params;
     const sql = `
       select *
-        from "medications";
+        from "medications"
+        where "petId" = $1;
     `;
-    const result = await db.query<Medication>(sql, [req.user?.userId]);
+    const result = await db.query<Medication>(sql, [petId]);
     res.json(result.rows);
   } catch (err) {
     next(err);
   }
 });
 
-app.get("/api/medications/:medId", authMiddleware, async (req, res, next) => {
-  try {
-    const { medId } = req.params;
-    if (!Number.isInteger(+medId)) {
-      throw new ClientError(400, "Invalid medication");
-    }
-    const sql = `
+app.get(
+  "/api/medications/:petId/:medId",
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { medId, petId } = req.params;
+      if (!Number.isInteger(+medId)) {
+        throw new ClientError(400, "Invalid medication");
+      }
+      const sql = `
       select * from "medications"
-      where "medId" = $1
+      where "medId" = $1 and "petId" = $2
     `;
-    const params = [medId, req.user?.userId];
-    const result = await db.query(sql, params);
-    const med = result.rows[0];
-    if (!med) throw new ClientError(404, "Medication not found");
-    res.json(med);
-  } catch (err) {
-    next(err);
-  }
-});
+      const params = [medId, petId];
+      const result = await db.query(sql, params);
+      const med = result.rows[0];
+      if (!med) throw new ClientError(404, "Medication not found");
+      res.json(med);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 app.post("/api/medications", authMiddleware, async (req, res, next) => {
   try {
-    const { name, dose, directions } = req.body;
+    const { name, dose, directions, petId } = req.body;
     if (!name || !dose) {
       throw new ClientError(400, "Medication information is required");
     }
     const sql = `
-      insert into "medications" ("name", "dose", "directions")
-        values ($1, $2, $3)
+      insert into "medications" ("name", "dose", "directions", "petId")
+        values ($1, $2, $3, $4)
         returning *
     `;
-    const params = [name, dose, directions, req.user?.userId];
+    const params = [name, dose, directions, petId];
     const result = await db.query<Medication>(sql, params);
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -198,7 +216,7 @@ app.post("/api/medications", authMiddleware, async (req, res, next) => {
 app.put("/api/medications/:medId", authMiddleware, async (req, res, next) => {
   try {
     const { medId } = req.params;
-    const { name, dose, directions } = req.body;
+    const { name, dose, directions, petId } = req.body;
     if (!name || !dose) {
       throw new ClientError(400, "Medication information is required");
     }
@@ -207,11 +225,11 @@ app.put("/api/medications/:medId", authMiddleware, async (req, res, next) => {
     }
     const sql = `
       update "medications"
-      set "name" = $1, "dose" = $2, "directions" = $3
-      where "medId" = $4
+      set "name" = $1, "dose" = $2, "directions" = $3, "petId" = $4
+      where "medId" = $5
       returning *;
     `;
-    const params = [name, dose, directions, medId, req.user?.userId];
+    const params = [name, dose, directions, petId, medId];
 
     const result = await db.query(sql, params);
     const updatedMed = result.rows[0];
@@ -257,22 +275,24 @@ app.delete(
  * DELETE an immunization
  */
 
-app.get("/api/immunizations", authMiddleware, async (req, res, next) => {
+app.get("/api/immunizations/:petId", authMiddleware, async (req, res, next) => {
   try {
+    const { petId } = req.params;
     const sql = `
       select *
         from "immunizations"
+        where "petId" = $1
     `;
-    const result = await db.query<Immunizations>(sql, [req.user?.userId]);
+    const result = await db.query<Immunizations>(sql, [petId]);
     res.json(result.rows);
   } catch (err) {
     next(err);
   }
 });
 
-app.get("/api/immunizations/:immunizationId", async (req, res, next) => {
+app.get("/api/immunizations/:petId/:immunizationId", async (req, res, next) => {
   try {
-    const { immunizationId } = req.params;
+    const { immunizationId, petId } = req.params;
     if (!Number.isInteger(+immunizationId)) {
       throw new ClientError(400, "Invalid immunization");
     }
@@ -280,7 +300,7 @@ app.get("/api/immunizations/:immunizationId", async (req, res, next) => {
       select * from "immunizations"
       where "immunizationId" = $1 and "petId"= $2;
     `;
-    const params = [immunizationId, req.user?.userId];
+    const params = [immunizationId, petId];
     const result = await db.query(sql, params);
     const immunization = result.rows[0];
     if (!immunization) throw new ClientError(404, "Immunization not found");
@@ -292,7 +312,7 @@ app.get("/api/immunizations/:immunizationId", async (req, res, next) => {
 
 app.post("/api/immunizations", authMiddleware, async (req, res, next) => {
   try {
-    const { name, date } = req.body;
+    const { name, date, petId } = req.body;
     if (!name || !date) {
       throw new ClientError(400, "Immunization information is required");
     }
@@ -300,11 +320,11 @@ app.post("/api/immunizations", authMiddleware, async (req, res, next) => {
     //   throw new ClientError(403, 'Immunization already exists')
     // }
     const sql = `
-      insert into "immunizations" ("name", "date")
-        values ($1, $2)
+      insert into "immunizations" ("name", "date", "petId")
+        values ($1, $2, $3)
         returning *
     `;
-    const params = [name, date, req.user?.userId];
+    const params = [name, date, petId];
     const result = await db.query<Immunizations>(sql, params);
     res.status(201).json(result.rows[0]);
     console.log("added immunization");
@@ -463,21 +483,19 @@ app.delete(
 // OPENAI API
 // OPEN AI INTERACTIONS
 
-app.get("/api/compare", async (req, res, next) => {
+app.get("/api/compare/:petId", async (req, res, next) => {
   try {
-    //  query for the medications in readmeds
-
+    const { petId } = req.params;
     const sql = `
       select "name"
         from "medications"
+        where "petId" = $1
     `;
-    const result = await db.query<any>(sql);
+    const result = await db.query<any>(sql, [petId]);
 
     const medication = result.rows
       .map((med: { name: string }): any => med.name)
       .join(", ");
-
-    // turn this into a string and put into prompt
 
     const prompt = [
       {

@@ -5,6 +5,7 @@ import { FiEdit } from "react-icons/fi";
 import { DeleteModal } from "./DeleteModal";
 import { FormEvent, useState } from "react";
 import { EditMedsModal } from "./EditMedsModal";
+import { useUser } from "../../components/useUser";
 // import { IoChevronUpOutline } from 'react-icons/io5';
 
 type Props = {
@@ -29,10 +30,14 @@ export function CurrentMeds({
   const [editMedName, setEditMedName] = useState("");
   const [editDose, setEditDose] = useState("");
   const [editDir, setEditDir] = useState("");
+  const { user } = useUser();
 
   async function handleEditMed(event: FormEvent) {
     event.preventDefault();
     try {
+      if (!user) {
+        throw new Error("not signed in");
+      }
       if (!editMed) throw new Error("Should never happen");
 
       const updatedMed = {
@@ -40,6 +45,7 @@ export function CurrentMeds({
         name: editMedName,
         dose: editDose,
         directions: editDir,
+        petId: user.pets[0].petId,
       };
 
       const savedMed = await updateMed(updatedMed);

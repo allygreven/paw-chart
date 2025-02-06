@@ -7,6 +7,7 @@ import {
 import { FaRegTrashCan } from "react-icons/fa6";
 import { EditModal } from "./EditModal";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../components/useUser";
 
 export function PastImmunizations() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +16,7 @@ export function PastImmunizations() {
   const [isOpen, setIsOpen] = useState(false);
   const [deletingImmunization, setDeletingImmunization] =
     useState<Immunization>();
+  const { user } = useUser();
 
   const navigate = useNavigate();
 
@@ -36,7 +38,10 @@ export function PastImmunizations() {
   useEffect(() => {
     async function load() {
       try {
-        const immunizations = await readImmunizations();
+        if (!user) {
+          throw new Error("not signed in");
+        }
+        const immunizations = await readImmunizations(user.pets[0].petId);
         setImmunizations(immunizations);
       } catch (err) {
         setError(err);
@@ -45,7 +50,7 @@ export function PastImmunizations() {
       }
     }
     load();
-  }, []);
+  }, [user]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) {

@@ -2,14 +2,18 @@ import { useState } from "react";
 import { readInteraction } from "../../data";
 import Markdown from "react-markdown";
 import { IoAlertCircleOutline } from "react-icons/io5";
+import { useUser } from "../../components/useUser";
 
 export function Interactions() {
   const [message, setMessage] = useState<string>("");
-  // const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
 
   async function handleSubmit() {
     try {
-      const interactions = await readInteraction();
+      if (!user) {
+        throw new Error("not signed in");
+      }
+      const interactions = await readInteraction(user.pets[0].petId);
       setMessage(interactions);
       // setIsLoading(true);
     } catch (err) {

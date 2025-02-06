@@ -56,9 +56,9 @@ export function Register() {
         ></input>
         <div>
           <label className="text-grey-body pr-2">Dog</label>
-          <input type="radio" name="type"></input>
+          <input type="radio" name="type" value="dog"></input>
           <label className="text-grey-body pl-5 pr-2">Cat</label>
-          <input type="radio" name="type"></input>
+          <input type="radio" name="type" value="cat"></input>
         </div>
         <input
           type="text"

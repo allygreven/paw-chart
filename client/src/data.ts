@@ -6,7 +6,7 @@ export type Immunization = {
   immunizationId?: number;
   name: string;
   date: string;
-  petId?: number;
+  petId: number;
 };
 
 export type Medication = {
@@ -14,7 +14,7 @@ export type Medication = {
   name: string;
   dose: string;
   directions: string;
-  petId?: number;
+  petId: number;
 };
 
 type Auth = {
@@ -24,7 +24,9 @@ type Auth = {
 
 // IMMUNIZATIONS
 
-export async function readImmunizations(): Promise<Immunization[]> {
+export async function readImmunizations(
+  petId: number,
+): Promise<Immunization[]> {
   const req = {
     method: "GET",
     headers: {
@@ -32,7 +34,7 @@ export async function readImmunizations(): Promise<Immunization[]> {
       Authorization: `Bearer ${readToken()}`,
     },
   };
-  const res = await fetch("/api/immunizations", req);
+  const res = await fetch(`/api/immunizations/${petId}`, req);
   if (!res.ok) {
     throw new Error(`Failed to fetch immunizations. Status: ${res.status}`);
   }
@@ -41,14 +43,18 @@ export async function readImmunizations(): Promise<Immunization[]> {
 }
 
 export async function readImmunization(
+  petId: number,
   immunizationId: number,
 ): Promise<Immunization | undefined> {
-  const response = await fetch(`/api/immunizations/${immunizationId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${readToken()}`,
+  const response = await fetch(
+    `/api/immunizations/${petId}/${immunizationId}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${readToken()}`,
+      },
     },
-  });
+  );
   if (!response.ok) {
     throw new Error(`Failed to fetch immunization. Status: ${response.status}`);
   }
@@ -83,7 +89,7 @@ export async function removeImmunization(immunizationId: number) {
 
 // MEDICATIONS
 
-export async function readMeds(): Promise<Medication[]> {
+export async function readMeds(petId: number): Promise<Medication[]> {
   const req = {
     method: "GET",
     headers: {
@@ -91,7 +97,7 @@ export async function readMeds(): Promise<Medication[]> {
       Authorization: `Bearer ${readToken()}`,
     },
   };
-  const res = await fetch("/api/medications", req);
+  const res = await fetch(`/api/medications/${petId}`, req);
   if (!res.ok) {
     throw new Error(`Failed to fetch medications. Status: ${res.status}`);
   }
@@ -99,8 +105,11 @@ export async function readMeds(): Promise<Medication[]> {
   return meds as Medication[];
 }
 
-export async function readMed(medId: number): Promise<Medication | undefined> {
-  const response = await fetch(`/api/medications/${medId}`, {
+export async function readMed(
+  petId: number,
+  medId: number,
+): Promise<Medication | undefined> {
+  const response = await fetch(`/api/medications/${petId}/${medId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${readToken()}`,
@@ -155,8 +164,8 @@ export async function removeMed(medId: number) {
 
 // OPENAI
 
-export async function readInteraction(): Promise<string> {
-  const response = await fetch("/api/compare", {
+export async function readInteraction(petId: number): Promise<string> {
+  const response = await fetch(`/api/compare/${petId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${readToken()}`,

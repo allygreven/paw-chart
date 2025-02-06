@@ -1,9 +1,11 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../components/useUser";
 
 export function AddImmunizations() {
   const [immunization, setImmunization] = useState("");
   const [date, setDate] = useState("");
+  const { user } = useUser();
 
   const navigate = useNavigate();
 
@@ -16,6 +18,7 @@ export function AddImmunizations() {
         body: JSON.stringify({
           name: immunization,
           date: date,
+          petId: user?.pets[0].petId,
         }),
       };
       const res = await fetch("/api/immunizations", req);
