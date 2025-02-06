@@ -22,10 +22,6 @@ export function Register() {
         throw new Error(`fetch Error ${res.status}`);
       }
       const user = (await res.json()) as User;
-      console.log('Registered', user);
-      console.log(
-        `You can check the database with: psql -d userManagement -c 'select * from users'`
-      );
       alert(
         `Successfully registered ${user.username} as userId ${user.userId}.`
       );

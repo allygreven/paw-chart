@@ -86,7 +86,7 @@ export function Homepage() {
 
       {/* <div className="bg-[url('/public/images/dog-and-cat.png')] bg-cover bg-center relative"></div> */}
       <img
-        src="/public/images/dog-and-cat.png"
+        src="/images/dog-and-cat.png"
         alt="dog and cat looking up"
         className="max-w-full "
       />

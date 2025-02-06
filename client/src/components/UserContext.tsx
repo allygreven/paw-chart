@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useEffect, useState } from 'react';
 import { readToken, readUser, removeAuth, saveAuth } from '../data';
+import { useNavigate } from 'react-router-dom';
 
 export type User = {
   userId: number;
@@ -25,9 +26,15 @@ type Props = {
 export function UserProvider({ children }: Props) {
   const [user, setUser] = useState<User>();
   const [token, setToken] = useState<string>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setUser(readUser());
+    const userRead = readUser();
+    if (userRead) {
+      navigate('/home');
+    }
+    // get value of readuser() and if its defined-- navigate to /home
     setToken(readToken());
   }, []);
 

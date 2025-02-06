@@ -1,8 +1,5 @@
 import { Link, Outlet } from 'react-router-dom';
 import { IoIosMenu } from 'react-icons/io';
-// import { IoHome } from 'react-icons/io5';
-// import { PiSignOut } from 'react-icons/pi';
-// import { GoInfo } from 'react-icons/go';
 import { useState } from 'react';
 import { IconType } from 'react-icons';
 
@@ -23,7 +20,7 @@ export function NavDrawer({ menuItems }: Props) {
 
   return (
     <div className="bg-background h-screen">
-      <header className="w-full m-auto bg-gradient-to-r from-[#6A7A62] to-[#B5CCAA] p-4 text-white">
+      <header className="w-full m-auto bg-gradient-to-r from-[#6A7A62] to-[#B5CCAA] p-1 text-white">
         <div className="flex items-center space-x-4">
           <IoIosMenu
             onClick={() => setIsOpen(!isOpen)}
@@ -33,7 +30,7 @@ export function NavDrawer({ menuItems }: Props) {
           {/* LOGO  */}
 
           <h1 className="ml-8 text-5xl font-logo ">
-            <Link to="/" className="flex items-center">
+            <Link to="/home" className="flex items-center">
               PawChart
               <img
                 src="/images/vecteezy_paw-icon-set-black-icon-png-transparent_9664031.png"
@@ -48,7 +45,7 @@ export function NavDrawer({ menuItems }: Props) {
 
         {isOpen && (
           <div>
-            <ul className="flex flex-col">
+            <ul className="flex flex-col font-inter font-light">
               {menuItems.map((menu) => (
                 <li key={menu.name} className="inline-block py-2 px-4">
                   <Link

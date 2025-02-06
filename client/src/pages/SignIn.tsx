@@ -29,9 +29,7 @@ export function SignIn() {
       }
       const { user, token } = (await res.json()) as AuthData;
       handleSignIn(user, token);
-      console.log('Signed In', user);
-      console.log('Received token:', token);
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       alert(`Error signing in: ${err}`);
     } finally {
@@ -40,7 +38,7 @@ export function SignIn() {
   }
 
   return (
-    <div className="flex bg-background h-screen">
+    <div className="flex bg-background h-screen font-regular">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col space-y-4 p-6 max-w-lg mx-auto items-center">
