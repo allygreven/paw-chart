@@ -1,44 +1,47 @@
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../components/useUser';
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../components/useUser";
 
 export function Welcome() {
   const { user } = useUser();
   const navigate = useNavigate();
+  console.log("test");
 
   return (
     <div>
-      <div className="relative w-full h-screen flex flex-col text-white bg-[url('/images/corgi-and-cat.jpeg')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/25 before:contrast-40">
-        <div className="left-18 flex flex-col ml-20 mt-18 z-1">
-          <h3 className="font-inter text-2xl font-thin ml-12">
+      <div className="before:contrast-40 relative flex h-screen w-full flex-col bg-[url('/images/corgi-and-cat.jpeg')] bg-cover bg-center text-white before:absolute before:inset-0 before:bg-black/25">
+        <div className="left-18 mt-27 z-1 ml-20 flex flex-col">
+          <h3 className="font-inter ml-12 text-2xl font-thin">
             Because they're
           </h3>
           <h2 className="font-fancy text-9xl">Family</h2>
-          <h3 className="font-inter text-2xl font-thin ml-15">Their health.</h3>
-          <h3 className="font-inter text-2xl font-thin ml-7">
+          <h3 className="font-inter ml-15 text-2xl font-thin">Their health.</h3>
+          <h3 className="font-inter ml-7 text-2xl font-thin">
             In the palm of your hands.
           </h3>
         </div>
 
         {/* buttons */}
 
-        <div className="flex flex-col justify-center ml-32 mt-47 z-2">
+        <div className="mt-34 z-2 ml-32 flex flex-col justify-center">
           {!user && (
             <>
               <button
                 onClick={() => {
-                  navigate('/register');
+                  navigate("/register");
                 }}
                 type="button"
-                className="w-50 mb-6 bg-[#6A7A62] font-regular text-white py-2 px-4 drop-shadow-md shadow-[0px_10px_10px_rgba(0,0,0,0.3)] rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+                className="w-50 font-regular mb-6 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white shadow-[0px_10px_10px_rgba(0,0,0,0.3)] drop-shadow-md hover:bg-[#8D9F84] focus:outline-none"
+              >
                 Register Here
               </button>
 
               <button
                 onClick={() => {
-                  navigate('/sign-in');
+                  navigate("/sign-in");
                 }}
                 type="button"
-                className="w-50 mb-6 bg-[#6A7A62] font-regular text-white py-2 px-4 drop-shadow-md shadow-[0px_10px_10px_rgba(0,0,0,0.3)] rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+                className="w-50 font-regular mb-6 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white shadow-[0px_10px_10px_rgba(0,0,0,0.3)] drop-shadow-md hover:bg-[#8D9F84] focus:outline-none"
+              >
                 Sign In
               </button>
             </>
@@ -46,10 +49,11 @@ export function Welcome() {
 
           <button
             onClick={() => {
-              navigate('/home');
+              navigate("/home");
             }}
             type="button"
-            className="w-50 mb-6 bg-[#6A7A62] font-regular text-white py-2 px-4 drop-shadow-md shadow-[0px_10px_10px_rgba(0,0,0,0.3)] rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+            className="w-50 font-regular mb-6 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white shadow-[0px_10px_10px_rgba(0,0,0,0.3)] drop-shadow-md hover:bg-[#8D9F84] focus:outline-none"
+          >
             Guest Sign In
           </button>
         </div>

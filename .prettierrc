@@ -1,1 +1,5 @@
-"./node_modules/@learningfuze/lfz-config/config/prettierrc.json"
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "extends": "./node_modules/@learningfuze/lfz-config/config/prettierrc.json",
+  "plugins": ["prettier-plugin-tailwindcss"]
+}

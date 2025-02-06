@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars -- Remove when used */
-import 'dotenv/config';
-import express from 'express';
-import pg from 'pg';
-import { authMiddleware, ClientError, errorMiddleware } from './lib/index.js';
-import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
-import axios from 'axios';
+import "dotenv/config";
+import express from "express";
+import pg from "pg";
+import { authMiddleware, ClientError, errorMiddleware } from "./lib/index.js";
+import argon2 from "argon2";
+import jwt from "jsonwebtoken";
+import axios from "axios";
 
 type Medication = {
   name: string;
@@ -54,8 +54,8 @@ type Auth = {
   password: string;
 };
 
-const hashKey = process.env.TOKEN_SECRET ?? '';
-if (!hashKey) throw new Error('TOKEN_SECRET not found in env');
+const hashKey = process.env.TOKEN_SECRET ?? "";
+if (!hashKey) throw new Error("TOKEN_SECRET not found in env");
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -74,11 +74,11 @@ app.use(express.json());
 
 /// SIGN - UP
 
-app.post('/api/auth/sign-up', async (req, res, next) => {
+app.post("/api/auth/sign-up", async (req, res, next) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
-      throw new ClientError(400, 'Username and password are required fields');
+      throw new ClientError(400, "Username and password are required fields");
     }
     const hashedPassword = await argon2.hash(password);
     const sql = `
@@ -88,7 +88,21 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
     `;
     const params = [username, hashedPassword];
     const result = await db.query<User>(sql, params);
-    res.status(201).json(result.rows[0]);
+    const user = result.rows[0];
+
+    const { petId, name, type, age } = req.body;
+    if (!petId || !name || !type || !age) {
+      throw new ClientError(400, "Pet information required");
+    }
+    const sql2 = `
+      insert into "pet" ("petId", "name", "type", "age")
+      values ($1, $2, $3, $4)
+      returning *
+    `;
+    const params2 = [petId, name, type, age, user.userId];
+    const result2 = await db.query<Pets>(sql2, params2);
+
+    res.status(201).json(user);
   } catch (err) {
     next(err);
   }
@@ -96,11 +110,11 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
 
 /// SIGN - IN
 
-app.post('/api/auth/sign-in', async (req, res, next) => {
+app.post("/api/auth/sign-in", async (req, res, next) => {
   try {
     const { username, password } = req.body as Partial<Auth>;
     if (!username || !password) {
-      throw new ClientError(401, 'Invalid login');
+      throw new ClientError(401, "Invalid login");
     }
     const sql = `
       select "userId", "hashedPassword"
@@ -110,10 +124,10 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     const params = [username];
     const result = await db.query<User>(sql, params);
     const user = result.rows[0];
-    if (!user) throw new ClientError(401, 'Invalid login');
+    if (!user) throw new ClientError(401, "Invalid login");
     const { userId, hashedPassword } = user;
     if (!(await argon2.verify(hashedPassword, password)))
-      throw new ClientError(401, 'Invalid login');
+      throw new ClientError(401, "Invalid login");
     const payload = { userId, username };
     const token = jwt.sign(payload, hashKey);
     res.json({ user: payload, token });
@@ -129,7 +143,7 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
  * DELETE a medication
  */
 
-app.get('/api/medications', authMiddleware, async (req, res, next) => {
+app.get("/api/medications", authMiddleware, async (req, res, next) => {
   try {
     const sql = `
       select *
@@ -142,11 +156,11 @@ app.get('/api/medications', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.get('/api/medications/:medId', authMiddleware, async (req, res, next) => {
+app.get("/api/medications/:medId", authMiddleware, async (req, res, next) => {
   try {
     const { medId } = req.params;
     if (!Number.isInteger(+medId)) {
-      throw new ClientError(400, 'Invalid medication');
+      throw new ClientError(400, "Invalid medication");
     }
     const sql = `
       select * from "medications"
@@ -155,18 +169,18 @@ app.get('/api/medications/:medId', authMiddleware, async (req, res, next) => {
     const params = [medId, req.user?.userId];
     const result = await db.query(sql, params);
     const med = result.rows[0];
-    if (!med) throw new ClientError(404, 'Medication not found');
+    if (!med) throw new ClientError(404, "Medication not found");
     res.json(med);
   } catch (err) {
     next(err);
   }
 });
 
-app.post('/api/medications', authMiddleware, async (req, res, next) => {
+app.post("/api/medications", authMiddleware, async (req, res, next) => {
   try {
     const { name, dose, directions } = req.body;
     if (!name || !dose) {
-      throw new ClientError(400, 'Medication information is required');
+      throw new ClientError(400, "Medication information is required");
     }
     const sql = `
       insert into "medications" ("name", "dose", "directions")
@@ -181,15 +195,15 @@ app.post('/api/medications', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.put('/api/medications/:medId', authMiddleware, async (req, res, next) => {
+app.put("/api/medications/:medId", authMiddleware, async (req, res, next) => {
   try {
     const { medId } = req.params;
     const { name, dose, directions } = req.body;
     if (!name || !dose) {
-      throw new ClientError(400, 'Medication information is required');
+      throw new ClientError(400, "Medication information is required");
     }
     if (!Number.isInteger(+medId)) {
-      throw new ClientError(400, 'Invalid medication');
+      throw new ClientError(400, "Invalid medication");
     }
     const sql = `
       update "medications"
@@ -202,23 +216,23 @@ app.put('/api/medications/:medId', authMiddleware, async (req, res, next) => {
     const result = await db.query(sql, params);
     const updatedMed = result.rows[0];
     if (!updatedMed) {
-      throw new ClientError(404, 'Medication not found');
+      throw new ClientError(404, "Medication not found");
     }
     res.json(updatedMed);
-    console.log('response sent');
+    console.log("response sent");
   } catch (err) {
     next(err);
   }
 });
 
 app.delete(
-  '/api/medications/:medId',
+  "/api/medications/:medId",
   authMiddleware,
   async (req, res, next) => {
     try {
       const { medId } = req.params;
       if (!medId) {
-        throw new ClientError(400, 'Invalid medication');
+        throw new ClientError(400, "Invalid medication");
       }
       const sql = `
       delete from "medications"
@@ -227,13 +241,13 @@ app.delete(
     `;
       const result = await db.query(sql, [medId, req.user?.userId]);
       if (result.rowCount === 0) {
-        throw new ClientError(404, 'Medication not found');
+        throw new ClientError(404, "Medication not found");
       }
       res.sendStatus(204);
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /** IMMUNIZATIONS
@@ -243,7 +257,7 @@ app.delete(
  * DELETE an immunization
  */
 
-app.get('/api/immunizations', authMiddleware, async (req, res, next) => {
+app.get("/api/immunizations", authMiddleware, async (req, res, next) => {
   try {
     const sql = `
       select *
@@ -256,11 +270,11 @@ app.get('/api/immunizations', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.get('/api/immunizations/:immunizationId', async (req, res, next) => {
+app.get("/api/immunizations/:immunizationId", async (req, res, next) => {
   try {
     const { immunizationId } = req.params;
     if (!Number.isInteger(+immunizationId)) {
-      throw new ClientError(400, 'Invalid immunization');
+      throw new ClientError(400, "Invalid immunization");
     }
     const sql = `
       select * from "immunizations"
@@ -269,18 +283,18 @@ app.get('/api/immunizations/:immunizationId', async (req, res, next) => {
     const params = [immunizationId, req.user?.userId];
     const result = await db.query(sql, params);
     const immunization = result.rows[0];
-    if (!immunization) throw new ClientError(404, 'Immunization not found');
+    if (!immunization) throw new ClientError(404, "Immunization not found");
     res.json(immunization);
   } catch (err) {
     next(err);
   }
 });
 
-app.post('/api/immunizations', authMiddleware, async (req, res, next) => {
+app.post("/api/immunizations", authMiddleware, async (req, res, next) => {
   try {
     const { name, date } = req.body;
     if (!name || !date) {
-      throw new ClientError(400, 'Immunization information is required');
+      throw new ClientError(400, "Immunization information is required");
     }
     // if (name === name) {
     //   throw new ClientError(403, 'Immunization already exists')
@@ -293,20 +307,20 @@ app.post('/api/immunizations', authMiddleware, async (req, res, next) => {
     const params = [name, date, req.user?.userId];
     const result = await db.query<Immunizations>(sql, params);
     res.status(201).json(result.rows[0]);
-    console.log('added immunization');
+    console.log("added immunization");
   } catch (err) {
     next(err);
   }
 });
 
 app.delete(
-  '/api/immunizations/:immunizationId',
+  "/api/immunizations/:immunizationId",
   authMiddleware,
   async (req, res, next) => {
     try {
       const { immunizationId } = req.params;
       if (!immunizationId) {
-        throw new ClientError(400, 'Invalid immunization');
+        throw new ClientError(400, "Invalid immunization");
       }
       const sql = `
       delete from "immunizations"
@@ -315,13 +329,13 @@ app.delete(
     `;
       const result = await db.query(sql, [immunizationId, req.user?.userId]);
       if (result.rowCount === 0) {
-        throw new ClientError(404, 'Immunization not found');
+        throw new ClientError(404, "Immunization not found");
       }
       res.sendStatus(204);
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /** SYMPTOM CHECKER
@@ -332,7 +346,7 @@ app.delete(
  * DELETE a symptom
  */
 
-app.get('/api/symptomChecker', authMiddleware, async (req, res, next) => {
+app.get("/api/symptomChecker", authMiddleware, async (req, res, next) => {
   try {
     const sql = `
       select *
@@ -347,13 +361,13 @@ app.get('/api/symptomChecker', authMiddleware, async (req, res, next) => {
 });
 
 app.get(
-  '/api/symptomChecker/:symptomId',
+  "/api/symptomChecker/:symptomId",
   authMiddleware,
   async (req, res, next) => {
     try {
       const { symptomId } = req.params;
       if (!Number.isInteger(+symptomId)) {
-        throw new ClientError(400, 'Invalid symptom');
+        throw new ClientError(400, "Invalid symptom");
       }
       const sql = `
       select * from "symptomChecker"
@@ -362,19 +376,19 @@ app.get(
       const params = [symptomId, req.user?.userId];
       const result = await db.query(sql, params);
       const symptom = result.rows[0];
-      if (!symptom) throw new ClientError(404, 'Symptoms not found');
+      if (!symptom) throw new ClientError(404, "Symptoms not found");
       res.json(symptom);
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
-app.post('/api/symptomChecker', authMiddleware, async (req, res, next) => {
+app.post("/api/symptomChecker", authMiddleware, async (req, res, next) => {
   try {
     const { name, diagnosis, sex } = req.body;
     if (!name || !diagnosis || !sex) {
-      throw new ClientError(400, 'Symptom information is required');
+      throw new ClientError(400, "Symptom information is required");
     }
     const sql = `
       insert into "symptomChecker" ("name", "diagnosis", "sex", "petId")
@@ -390,17 +404,17 @@ app.post('/api/symptomChecker', authMiddleware, async (req, res, next) => {
 });
 
 app.put(
-  '/api/symptomChecker/:symptomId',
+  "/api/symptomChecker/:symptomId",
   authMiddleware,
   async (req, res, next) => {
     try {
       const { symptomId } = req.params;
       const { name, diagnosis } = req.body;
       if (!name || !diagnosis) {
-        throw new ClientError(400, 'Symptom information are required');
+        throw new ClientError(400, "Symptom information are required");
       }
       if (!Number.isInteger(+symptomId)) {
-        throw new ClientError(400, 'Invalid symptom');
+        throw new ClientError(400, "Invalid symptom");
       }
       const sql = `
       update "symptomChecker"
@@ -412,23 +426,23 @@ app.put(
       const result = await db.query(sql, params);
       const updatedSymptom = result.rows[0];
       if (!updatedSymptom) {
-        throw new ClientError(404, 'Symptom not found');
+        throw new ClientError(404, "Symptom not found");
       }
       res.json(updatedSymptom);
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 app.delete(
-  '/api/symptomChecker/:symptomId',
+  "/api/symptomChecker/:symptomId",
   authMiddleware,
   async (req, res, next) => {
     try {
       const { symptomId } = req.params;
       if (!symptomId) {
-        throw new ClientError(400, 'Invalid symptom');
+        throw new ClientError(400, "Invalid symptom");
       }
       const sql = `
       delete from "symptomChecker"
@@ -437,19 +451,19 @@ app.delete(
     `;
       const result = await db.query(sql, [symptomId, req.user?.userId]);
       if (result.rowCount === 0) {
-        throw new ClientError(404, 'Symptom not found');
+        throw new ClientError(404, "Symptom not found");
       }
       res.sendStatus(204);
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 // OPENAI API
 // OPEN AI INTERACTIONS
 
-app.get('/api/compare', async (req, res, next) => {
+app.get("/api/compare", async (req, res, next) => {
   try {
     //  query for the medications in readmeds
 
@@ -461,16 +475,16 @@ app.get('/api/compare', async (req, res, next) => {
 
     const medication = result.rows
       .map((med: { name: string }): any => med.name)
-      .join(', ');
+      .join(", ");
 
     // turn this into a string and put into prompt
 
     const prompt = [
       {
-        role: 'developer',
+        role: "developer",
         content: [
           {
-            type: 'text',
+            type: "text",
             text: `
              Compare the following two medications and the severity of their interaction ("High", "Moderate", "Low"),
       you're a veterinary web application factually informing a patient, either canine or feline, their medication interactions
@@ -493,19 +507,19 @@ app.get('/api/compare', async (req, res, next) => {
 
     // Make the API request to OpenAI
     const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
+      "https://api.openai.com/v1/chat/completions",
       {
-        model: 'gpt-4o-mini', // Or another model like GPT-4
+        model: "gpt-4o-mini", // Or another model like GPT-4
         messages: prompt,
         max_tokens: 150, // Adjust as needed
         temperature: 0.1,
       },
       {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${process.env.MY_API_KEY}`,
         },
-      }
+      },
     );
 
     res.json(response.data.choices[0].message.content);
@@ -649,8 +663,8 @@ app.get('/api/compare', async (req, res, next) => {
 // );
 
 // Create paths for static directories
-const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
-const uploadsStaticDir = new URL('public', import.meta.url).pathname;
+const reactStaticDir = new URL("../client/dist", import.meta.url).pathname;
+const uploadsStaticDir = new URL("public", import.meta.url).pathname;
 
 app.use(express.static(reactStaticDir));
 // Static directory for file uploads server/public/
@@ -662,10 +676,10 @@ app.use(express.json());
  * It responds with `index.html` to support page refreshes with React Router.
  * This must be the _last_ route, just before errorMiddleware.
  */
-app.get('*', (req, res) => res.sendFile(`${reactStaticDir}/index.html`));
+app.get("*", (req, res) => res.sendFile(`${reactStaticDir}/index.html`));
 
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
-  console.log('Listening on port', process.env.PORT);
+  console.log("Listening on port", process.env.PORT);
 });
