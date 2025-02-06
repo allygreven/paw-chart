@@ -1,15 +1,15 @@
-import { Accordion } from './Accordion';
-import { FormEvent, useEffect, useState } from 'react';
-import { MedsModal } from './MedsModal';
-import { addMed, Medication, readMeds } from '../../data';
-import { Interactions } from './Interactions';
+import { Accordion } from "./Accordion";
+import { FormEvent, useEffect, useState } from "react";
+import { MedsModal } from "./MedsModal";
+import { addMed, Medication, readMeds } from "../../data";
+import { Interactions } from "./Interactions";
 
 export function Medications() {
   const [isOpen, setIsOpen] = useState(false);
   const [medications, setMedications] = useState<Medication[]>([]);
-  const [medication, setMedication] = useState('');
-  const [dose, setDose] = useState('');
-  const [directions, setDirections] = useState('');
+  const [medication, setMedication] = useState("");
+  const [dose, setDose] = useState("");
+  const [directions, setDirections] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
 
@@ -24,9 +24,9 @@ export function Medications() {
       const newMed = await addMed(newMedication);
 
       setMedications((prevMedications) => [...prevMedications, newMed]);
-      setMedication('');
-      setDose('');
-      setDirections('');
+      setMedication("");
+      setDose("");
+      setDirections("");
       setIsOpen(false);
     } catch (err) {
       alert(`Error adding medication: ${err}`);
@@ -52,14 +52,14 @@ export function Medications() {
     return (
       <div>
         Error Loading Entries:
-        {error instanceof Error ? error.message : 'Unknown Error'}
+        {error instanceof Error ? error.message : "Unknown Error"}
       </div>
     );
   }
 
   async function handleUpdate(med: Medication) {
     setMedications((prevMeds) =>
-      prevMeds.map((m) => (m.medId === med.medId ? med : m))
+      prevMeds.map((m) => (m.medId === med.medId ? med : m)),
     );
   }
 
@@ -69,23 +69,25 @@ export function Medications() {
 
   return (
     <div>
-      <div className="flex flex-col items-center text-grey-body bg-background">
-        <h1 className="font-heading text-2xl mt-6 mb-7 ">Medications</h1>
+      <div className="text-grey-body bg-background flex flex-col items-center">
+        <h1 className="font-heading mb-7 mt-6 text-2xl">Medications</h1>
         <button
           onClick={() => setIsOpen(true)}
           type="button"
-          className="w-70 mb-6 bg-[#6A7A62] font-regular text-white py-2 px-4 shadow-lg rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+          className="w-70 font-regular mb-6 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white shadow-lg hover:bg-[#8D9F84] focus:outline-none"
+        >
           Add a Medication
         </button>
 
         {/* ADD MEDICATION MODAL */}
 
         <MedsModal
-          className="bg-background rounded-2xl backdrop:bg-black/50 shadow-lg top-2 mx-auto"
+          className="bg-background top-2 mx-auto rounded-2xl shadow-lg backdrop:bg-black/50"
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}>
-          <form onSubmit={handleAdd} className="m-20 font-regular">
-            <h1 className="font-heading text-2xl ml-2 mb-8">Add Medication</h1>
+          onClose={() => setIsOpen(false)}
+        >
+          <form onSubmit={handleAdd} className="font-regular m-20">
+            <h1 className="font-heading mb-8 ml-2 text-2xl">Add Medication</h1>
             <label>Medication Name</label>
             <input
               value={medication}
@@ -93,7 +95,8 @@ export function Medications() {
               required
               type="text"
               placeholder="Medication"
-              className="mt-2 block w-85 mb-6 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
+              className="w-85 mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+            ></input>
             <label>Dosage</label>
             <input
               value={dose}
@@ -101,27 +104,31 @@ export function Medications() {
               required
               type="text"
               placeholder="Type here"
-              className="mt-2 block w-85 mb-6 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
+              className="w-85 mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+            ></input>
             <label>Directions</label>
             <input
               type="text"
               value={directions}
               onChange={(e) => setDirections(e.target.value)}
               placeholder="Not required"
-              className="mt-2 block w-85 mb-12 px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none "></input>
+              className="w-85 mb-12 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+            ></input>
 
-            <div className="flex justify-center space-x-4 mt-4">
+            <div className="mt-4 flex justify-center space-x-4">
               <button
                 onClick={() => {
                   setIsOpen(false);
                 }}
-                className="w-25 mb-1 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+                className="w-25 font-regular mb-1 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white hover:bg-[#8D9F84] focus:outline-none"
+              >
                 Cancel
               </button>
 
               <button
                 type="submit"
-                className="w-25 mb-1 ml-2 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+                className="w-25 font-regular mb-1 ml-2 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white hover:bg-[#8D9F84] focus:outline-none"
+              >
                 Submit
               </button>
             </div>
@@ -131,7 +138,7 @@ export function Medications() {
         {/* CURRENT MEDICATIONS */}
 
         <div>
-          <h2 className="font-heading text-xl mt-5 mb-3">
+          <h2 className="font-heading mb-3 mt-5 text-xl">
             Current Medications
           </h2>
           <Accordion

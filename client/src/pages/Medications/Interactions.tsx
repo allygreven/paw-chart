@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { readInteraction } from '../../data';
-import Markdown from 'react-markdown';
-import { IoAlertCircleOutline } from 'react-icons/io5';
+import { useState } from "react";
+import { readInteraction } from "../../data";
+import Markdown from "react-markdown";
+import { IoAlertCircleOutline } from "react-icons/io5";
 
 export function Interactions() {
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>("");
   // const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit() {
@@ -20,20 +20,19 @@ export function Interactions() {
   return (
     <div>
       <div className="inline-flex items-center gap-4">
-        <h2 className="font-heading text-xl mb-3">Interactions</h2>
+        <h2 className="font-heading mb-3 text-xl">Interactions</h2>
         <button
           onClick={handleSubmit}
           type="button"
-          className={`
-
-          w-30 mb-4 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer`}>
+          className={`w-30 font-regular mb-4 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white hover:bg-[#8D9F84] focus:outline-none`}
+        >
           Click here
         </button>
       </div>
-      <div className="w-125 p-4 mb-6 bg-white font-regular drop-shadow-md shadow-[0px_10px_10px_rgba(0,0,0,0.3)]">
+      <div className="w-125 font-regular mb-6 bg-white p-4 shadow-[0px_10px_10px_rgba(0,0,0,0.3)] drop-shadow-md">
         {message && (
-          <div className="flex items-start gap-2 ">
-            <IoAlertCircleOutline className="text-red-500 text-5xl" />
+          <div className="flex items-start gap-2">
+            <IoAlertCircleOutline className="text-5xl text-red-500" />
             <Markdown className="text-med">{message}</Markdown>
           </div>
         )}

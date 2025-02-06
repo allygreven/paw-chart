@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { CurrentMeds } from './CurrentMeds';
-import { Medication } from '../../data';
+import { useState } from "react";
+import { CurrentMeds } from "./CurrentMeds";
+import { Medication } from "../../data";
 
 type Props = {
   meds: Medication[];
@@ -12,7 +12,7 @@ export function Accordion({ meds, onUpdate, onDelete }: Props) {
   const [medId, setMedId] = useState<number>();
 
   return (
-    <div className=" bg-white w-125 mt-5 mb-10 text-grey-body drop-shadow-md shadow-[0px_10px_10px_rgba(0,0,0,0.3)] font-regular border-collapse bg-white  ">
+    <div className="w-125 text-grey-body font-regular mb-10 mt-5 border-collapse bg-white shadow-[0px_10px_10px_rgba(0,0,0,0.3)] drop-shadow-md">
       {meds.map((med) => (
         <CurrentMeds
           key={med.medId}

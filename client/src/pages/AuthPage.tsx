@@ -1,14 +1,14 @@
-import { Register } from './Register';
-import { SignIn } from './SignIn';
+import { Register } from "./Register";
+import { SignIn } from "./SignIn";
 
 type Props = {
-  mode: 'register' | 'sign-in';
+  mode: "register" | "sign-in";
 };
 export function AuthPage({ mode }: Props) {
   return (
     <div className="container m-4">
-      {mode === 'register' && <Register />}
-      {mode === 'sign-in' && <SignIn />}
+      {mode === "register" && <Register />}
+      {mode === "sign-in" && <SignIn />}
     </div>
   );
 }

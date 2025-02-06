@@ -1,9 +1,9 @@
-import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function AddImmunizations() {
-  const [immunization, setImmunization] = useState('');
-  const [date, setDate] = useState('');
+  const [immunization, setImmunization] = useState("");
+  const [date, setDate] = useState("");
 
   const navigate = useNavigate();
 
@@ -11,21 +11,21 @@ export function AddImmunizations() {
     event.preventDefault();
     try {
       const req = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: immunization,
           date: date,
         }),
       };
-      const res = await fetch('/api/immunizations', req);
+      const res = await fetch("/api/immunizations", req);
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
       // const addedImmunizations = await res.json();
       // setImmunization(immunization.concat(addedImmunizations))
       // setImmunization([...immunization, addedImmunizations])
-      navigate('/');
+      navigate("/");
     } catch (err) {
       alert(`Error adding immunization: ${err}`);
     }
@@ -35,14 +35,16 @@ export function AddImmunizations() {
     <>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col space-y-4 p-6 max-w-lg mx-auto ">
+        className="mx-auto flex max-w-lg flex-col space-y-4 p-6"
+      >
         <label className="mb-2">Immunization</label>
         <select
           id="dropdown"
           value={immunization}
           onChange={(e) => setImmunization(e.target.value)}
           required
-          className="mt-1 mb-1 block w-full px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none ">
+          className="mb-1 mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+        >
           <option>-- Select an option --</option>
           <option>Bordetella bronchiseptica</option>
           <option>Calicivirus (part of FVRCP)</option>
@@ -80,11 +82,13 @@ export function AddImmunizations() {
           value={date}
           onChange={(e) => setDate(e.target.value)}
           placeholder="mm/dd/yyyy"
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-xl shadow-sm bg-white focus:outline-none focus:border-blue-500"></input>
+          className="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+        ></input>
         <div className="flex justify-center">
           <button
             type="submit"
-            className="w-25 mt-4 mb-6 bg-[#6A7A62] text-white py-2 px-4 shadow-lg rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+            className="w-25 mb-6 mt-4 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white shadow-lg hover:bg-[#8D9F84] focus:outline-none"
+          >
             Submit
           </button>
         </div>
