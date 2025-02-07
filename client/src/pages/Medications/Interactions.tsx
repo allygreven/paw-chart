@@ -1,25 +1,46 @@
-import { useState } from "react";
-import { readInteraction } from "../../data";
-import Markdown from "react-markdown";
-import { IoAlertCircleOutline } from "react-icons/io5";
-import { useUser } from "../../components/useUser";
+import { useState } from 'react';
+import { readInteraction } from '../../data';
+import Markdown from 'react-markdown';
+import { IoAlertCircleOutline } from 'react-icons/io5';
+import { useUser } from '../../components/useUser';
+import { RotatingLines } from 'react-loader-spinner';
 
 export function Interactions() {
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>('');
   const { user } = useUser();
+  const [spinner, setSpinner] = useState(false);
 
   async function handleSubmit() {
     try {
       if (!user) {
-        throw new Error("not signed in");
+        throw new Error('not signed in');
       }
+      setSpinner(true);
       const interactions = await readInteraction(user.pets[0].petId);
       setMessage(interactions);
-      // setIsLoading(true);
+      setSpinner(false);
     } catch (err) {
       alert(`Error fetching OpenAi API: ${err}`);
+      setSpinner(false);
     }
   }
+
+  if (spinner)
+    return (
+      <div>
+        <RotatingLines
+          visible={true}
+          height="90"
+          width="90"
+          color="grey"
+          strokeWidth="5"
+          animationDuration="0.75"
+          ariaLabel="rotating-lines-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
+      </div>
+    );
 
   return (
     <div>

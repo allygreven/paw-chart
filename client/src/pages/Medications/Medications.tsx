@@ -1,16 +1,16 @@
-import { Accordion } from "./Accordion";
-import { FormEvent, useEffect, useState } from "react";
-import { MedsModal } from "./MedsModal";
-import { addMed, Medication, readMeds } from "../../data";
-import { Interactions } from "./Interactions";
-import { useUser } from "../../components/useUser";
+import { Accordion } from './Accordion';
+import { FormEvent, useEffect, useState } from 'react';
+import { MedsModal } from './MedsModal';
+import { addMed, Medication, readMeds } from '../../data';
+import { Interactions } from './Interactions';
+import { useUser } from '../../components/useUser';
 
 export function Medications() {
   const [isOpen, setIsOpen] = useState(false);
   const [medications, setMedications] = useState<Medication[]>([]);
-  const [medication, setMedication] = useState("");
-  const [dose, setDose] = useState("");
-  const [directions, setDirections] = useState("");
+  const [medication, setMedication] = useState('');
+  const [dose, setDose] = useState('');
+  const [directions, setDirections] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
   const { user } = useUser();
@@ -18,7 +18,7 @@ export function Medications() {
   async function handleAdd(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!user) {
-      throw new Error("not signed in");
+      throw new Error('not signed in');
     }
     try {
       const newMedication = {
@@ -30,9 +30,9 @@ export function Medications() {
       const newMed = await addMed(newMedication);
 
       setMedications((prevMedications) => [...prevMedications, newMed]);
-      setMedication("");
-      setDose("");
-      setDirections("");
+      setMedication('');
+      setDose('');
+      setDirections('');
       setIsOpen(false);
     } catch (err) {
       alert(`Error adding medication: ${err}`);
@@ -43,7 +43,7 @@ export function Medications() {
     async function load() {
       try {
         if (!user) {
-          throw new Error("not signed in");
+          throw new Error('not signed in');
         }
         const medications = await readMeds(user.pets[0].petId);
         setMedications(medications);
@@ -61,7 +61,7 @@ export function Medications() {
     return (
       <div>
         Error Loading Entries:
-        {error instanceof Error ? error.message : "Unknown Error"}
+        {error instanceof Error ? error.message : 'Unknown Error'}
       </div>
     );
   }

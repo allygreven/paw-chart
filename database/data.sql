@@ -4,7 +4,7 @@ insert into "users"
 
 insert into "pets"
   ("name", "type", "age", "userId")
-  values ('Bella', 'dog', 11, 1);
+  values ('Guest', 'dog', 11, 1);
 
 
 insert into "immunizations"

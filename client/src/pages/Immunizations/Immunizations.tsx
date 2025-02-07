@@ -1,5 +1,5 @@
-import { AddImmunizations } from "./AddImmunization";
-import { PastImmunizations } from "./PastImmunizations";
+import { AddImmunizations } from './AddImmunization';
+import { PastImmunizations } from './PastImmunizations';
 
 export function Immunizations() {
   return (

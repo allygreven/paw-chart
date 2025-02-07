@@ -1,9 +1,7 @@
-import { Link, Outlet } from "react-router-dom";
-import { IoIosMenu } from "react-icons/io";
-import { useState } from "react";
-import { IconType } from "react-icons";
-
-// ${<${icon.signOut} />}
+import { Link, Outlet } from 'react-router-dom';
+import { IoIosMenu } from 'react-icons/io';
+import { useState } from 'react';
+import { IconType } from 'react-icons';
 
 export type MenuItem = {
   name: string;

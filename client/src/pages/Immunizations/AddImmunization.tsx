@@ -1,10 +1,10 @@
-import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../components/useUser";
+import { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../components/useUser';
 
 export function AddImmunizations() {
-  const [immunization, setImmunization] = useState("");
-  const [date, setDate] = useState("");
+  const [immunization, setImmunization] = useState('');
+  const [date, setDate] = useState('');
   const { user } = useUser();
 
   const navigate = useNavigate();
@@ -13,22 +13,19 @@ export function AddImmunizations() {
     event.preventDefault();
     try {
       const req = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: immunization,
           date: date,
           petId: user?.pets[0].petId,
         }),
       };
-      const res = await fetch("/api/immunizations", req);
+      const res = await fetch('/api/immunizations', req);
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
-      // const addedImmunizations = await res.json();
-      // setImmunization(immunization.concat(addedImmunizations))
-      // setImmunization([...immunization, addedImmunizations])
-      navigate("/");
+      navigate('/');
     } catch (err) {
       alert(`Error adding immunization: ${err}`);
     }
@@ -68,15 +65,6 @@ export function AddImmunizations() {
           <option>Ringworm</option>
           <option>Other</option>
         </select>
-
-        {/* <span className="text-[7px] mb-0 mt-0">
-          *DA2PP: (Distemper, Adenovirus I & II, Parvovirus, Parainfluenza) Also
-          referred to as the 5-way vaccine
-        </span>
-        <span className="text-[7px] mt-0 mb-6">
-          **FVRCP: (Feline Viral Rhinotracheitis, Calicivirus, Panleukopenia,
-          and Rabies)
-        </span> */}
 
         <label className="mb-2 mt-4">Date</label>
         <input

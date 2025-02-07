@@ -1,6 +1,6 @@
-import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { User } from "../components/UserContext";
+import { FormEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { User } from '../components/UserContext';
 
 export function Register() {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,11 +13,11 @@ export function Register() {
       const formData = new FormData(event.currentTarget);
       const userData = Object.fromEntries(formData);
       const req = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       };
-      const res = await fetch("/api/auth/sign-up", req);
+      const res = await fetch('/api/auth/sign-up', req);
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
@@ -25,7 +25,7 @@ export function Register() {
       alert(
         `Successfully registered ${user.username} as userId ${user.userId}.`,
       );
-      navigate("/sign-in");
+      navigate('/sign-in');
     } catch (err) {
       alert(`Error registering user: ${err}`);
     } finally {
