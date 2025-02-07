@@ -1,18 +1,18 @@
 export function SymptomChecker() {
   return (
-    <div className="flex flex-col bg-background h-screen font-regular items-center">
-      <h1 className="font-heading text-2xl mt-6 mb-4">Symptom Checker</h1>
+    <div className="bg-background font-regular text-grey-body flex h-screen flex-col items-center">
+      <h1 className="font-heading mb-4 mt-6 text-2xl">Symptom Checker</h1>
 
       {/* dog or cat */}
 
       <div>
-        <label className="pr-2 text-grey-body">Dog</label>
+        <label className="text-grey-body pr-2">Dog</label>
         <input type="radio" name="type"></input>
-        <label className="pr-2 pl-5 text-grey-body">Cat</label>
+        <label className="text-grey-body pl-5 pr-2">Cat</label>
         <input type="radio" name="type"></input>
       </div>
 
-      <h2 className="font-heading text-xl mt-6 mb-4">Common Symptoms</h2>
+      <h2 className="font-heading mb-4 mt-6 text-xl">Common Symptoms</h2>
       <div className="max-w-3xl">
         <label className="m-2 cursor-pointer">
           Coughing
@@ -80,7 +80,11 @@ export function SymptomChecker() {
         </label>
 
         <label>
-          <input type="text" placeholder="other" />
+          <input
+            type="text"
+            placeholder="other"
+            className="w-45 block rounded-xl border border-gray-300 bg-white px-3 py-1 shadow-sm focus:outline-none"
+          />
         </label>
       </div>
     </div>

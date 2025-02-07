@@ -1,8 +1,12 @@
+// import { User } from '../components/UserContext';
+
+import { User } from "./components/UserContext";
+
 export type Immunization = {
   immunizationId?: number;
   name: string;
   date: string;
-  petId?: number;
+  petId: number;
 };
 
 export type Medication = {
@@ -10,20 +14,27 @@ export type Medication = {
   name: string;
   dose: string;
   directions: string;
-  petId?: number;
+  petId: number;
+};
+
+type Auth = {
+  user: User;
+  token: string;
 };
 
 // IMMUNIZATIONS
 
-export async function readImmunizations(): Promise<Immunization[]> {
+export async function readImmunizations(
+  petId: number,
+): Promise<Immunization[]> {
   const req = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
-      // Authorization: `Bearer ${readToken()}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${readToken()}`,
     },
   };
-  const res = await fetch('/api/immunizations', req);
+  const res = await fetch(`/api/immunizations/${petId}`, req);
   if (!res.ok) {
     throw new Error(`Failed to fetch immunizations. Status: ${res.status}`);
   }
@@ -32,14 +43,18 @@ export async function readImmunizations(): Promise<Immunization[]> {
 }
 
 export async function readImmunization(
-  immunizationId: number
+  petId: number,
+  immunizationId: number,
 ): Promise<Immunization | undefined> {
-  const response = await fetch(`/api/immunizations/${immunizationId}`, {
-    method: 'GET',
-    // headers: {
-    //   Authorization: `Bearer ${readToken()}`,
-    // },
-  });
+  const response = await fetch(
+    `/api/immunizations/${petId}/${immunizationId}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${readToken()}`,
+      },
+    },
+  );
   if (!response.ok) {
     throw new Error(`Failed to fetch immunization. Status: ${response.status}`);
   }
@@ -48,11 +63,11 @@ export async function readImmunization(
 }
 
 export async function addImmunization(newImmunization: Immunization) {
-  const response = await fetch('/api/immunizations', {
-    method: 'POST',
+  const response = await fetch("/api/immunizations", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      // Authorization: `Bearer ${readToken()}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(newImmunization),
   });
@@ -63,10 +78,10 @@ export async function addImmunization(newImmunization: Immunization) {
 
 export async function removeImmunization(immunizationId: number) {
   const response = await fetch(`/api/immunizations/${immunizationId}`, {
-    method: 'DELETE',
-    // headers: {
-    //   Authorization: `Bearer ${readToken()}`,
-    // },
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
   });
   if (!response.ok)
     throw new Error(`Failed to delete immunization ${response.status}`);
@@ -74,15 +89,15 @@ export async function removeImmunization(immunizationId: number) {
 
 // MEDICATIONS
 
-export async function readMeds(): Promise<Medication[]> {
+export async function readMeds(petId: number): Promise<Medication[]> {
   const req = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
-      // Authorization: `Bearer ${readToken()}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${readToken()}`,
     },
   };
-  const res = await fetch('/api/medications', req);
+  const res = await fetch(`/api/medications/${petId}`, req);
   if (!res.ok) {
     throw new Error(`Failed to fetch medications. Status: ${res.status}`);
   }
@@ -90,12 +105,15 @@ export async function readMeds(): Promise<Medication[]> {
   return meds as Medication[];
 }
 
-export async function readMed(medId: number): Promise<Medication | undefined> {
-  const response = await fetch(`/api/medications/${medId}`, {
-    method: 'GET',
-    // headers: {
-    //   Authorization: `Bearer ${readToken()}`,
-    // },
+export async function readMed(
+  petId: number,
+  medId: number,
+): Promise<Medication | undefined> {
+  const response = await fetch(`/api/medications/${petId}/${medId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
   });
   if (!response.ok) {
     throw new Error(`Failed to fetch medication. Status: ${response.status}`);
@@ -105,11 +123,11 @@ export async function readMed(medId: number): Promise<Medication | undefined> {
 }
 
 export async function addMed(newMed: Medication) {
-  const response = await fetch('/api/medications', {
-    method: 'POST',
+  const response = await fetch("/api/medications", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      // Authorization: `Bearer ${readToken()}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(newMed),
   });
@@ -120,10 +138,10 @@ export async function addMed(newMed: Medication) {
 
 export async function updateMed(med: Medication) {
   const response = await fetch(`/api/medications/${med.medId}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
-      // Authorization: `Bearer ${readToken()}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(med),
   });
@@ -135,10 +153,10 @@ export async function updateMed(med: Medication) {
 
 export async function removeMed(medId: number) {
   const response = await fetch(`/api/medications/${medId}`, {
-    method: 'DELETE',
-    // headers: {
-    //   Authorization: `Bearer ${readToken()}`,
-    // },
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
   });
   if (!response.ok)
     throw new Error(`Failed to delete medication ${response.status}`);
@@ -146,14 +164,39 @@ export async function removeMed(medId: number) {
 
 // OPENAI
 
-export async function readInteraction(): Promise<string> {
-  const response = await fetch('/api/compare', {
-    method: 'GET',
+export async function readInteraction(petId: number): Promise<string> {
+  const response = await fetch(`/api/compare/${petId}`, {
+    method: "GET",
     headers: {
-      // Authorization: `Bearer ${readToken()}`,
+      Authorization: `Bearer ${readToken()}`,
     },
   });
   if (!response.ok) throw new Error(`response status ${response.status}`);
   const data = (await response.json()) as string;
   return data;
+}
+
+// USER MANAGEMENT
+
+const authKey = "um.auth";
+
+export function saveAuth(user: User, token: string): void {
+  const auth: Auth = { user, token };
+  localStorage.setItem(authKey, JSON.stringify(auth));
+}
+
+export function removeAuth(): void {
+  localStorage.removeItem(authKey);
+}
+
+export function readUser(): User | undefined {
+  const auth = localStorage.getItem(authKey);
+  if (!auth) return undefined;
+  return (JSON.parse(auth) as Auth).user;
+}
+
+export function readToken(): string | undefined {
+  const auth = localStorage.getItem(authKey);
+  if (!auth) return undefined;
+  return (JSON.parse(auth) as Auth).token;
 }

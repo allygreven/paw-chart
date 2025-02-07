@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Immunization,
   readImmunizations,
   removeImmunization,
-} from '../../data';
-import { FaRegTrashCan } from 'react-icons/fa6';
-import { EditModal } from './EditModal';
-import { useNavigate } from 'react-router-dom';
+} from "../../data";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { EditModal } from "./EditModal";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../components/useUser";
 
 export function PastImmunizations() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,28 +16,32 @@ export function PastImmunizations() {
   const [isOpen, setIsOpen] = useState(false);
   const [deletingImmunization, setDeletingImmunization] =
     useState<Immunization>();
+  const { user } = useUser();
 
   const navigate = useNavigate();
 
   async function handleDelete() {
     try {
       if (!deletingImmunization?.immunizationId)
-        throw new Error('Should never happen');
+        throw new Error("Should never happen");
       await removeImmunization(deletingImmunization.immunizationId);
 
-      alert('Immunization deleted!');
+      alert("Immunization deleted!");
       setIsOpen(false);
       setDeletingImmunization(undefined);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      alert('there was an error deleting immunization' + error);
+      alert("there was an error deleting immunization" + error);
     }
   }
 
   useEffect(() => {
     async function load() {
       try {
-        const immunizations = await readImmunizations();
+        if (!user) {
+          throw new Error("not signed in");
+        }
+        const immunizations = await readImmunizations(user.pets[0].petId);
         setImmunizations(immunizations);
       } catch (err) {
         setError(err);
@@ -45,22 +50,22 @@ export function PastImmunizations() {
       }
     }
     load();
-  }, []);
+  }, [user]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) {
     return (
       <div>
         Error Loading Entries:
-        {error instanceof Error ? error.message : 'Unknown Error'}
+        {error instanceof Error ? error.message : "Unknown Error"}
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="mt-1 mr-60">Past Immunizations</h2>
-      <table className="w-full border-collapse bg-white mt-4 m-20 rounded-xl shadow-lg">
+      <h2 className="mr-60 mt-1">Past Immunizations</h2>
+      <table className="m-20 mt-4 w-full border-collapse rounded-xl bg-white shadow-lg">
         <thead>
           <tr className="border-b border-gray-300">
             <th className="px-6 py-2 text-left">NAME</th>
@@ -72,18 +77,18 @@ export function PastImmunizations() {
             <tr key={row.immunizationId} className="border-b border-gray-200">
               <td className="px-4 py-2">{row.name}</td>
               <td className="px-4 py-2 text-right">
-                {new Date(row.date).toLocaleDateString('en-us', {
-                  month: 'numeric',
-                  day: 'numeric',
-                  year: 'numeric',
+                {new Date(row.date).toLocaleDateString("en-us", {
+                  month: "numeric",
+                  day: "numeric",
+                  year: "numeric",
                 })}
               </td>
               <td>
                 <FaRegTrashCan
                   style={{
-                    color: 'grey',
-                    cursor: 'pointer',
-                    fontSize: '18px',
+                    color: "grey",
+                    cursor: "pointer",
+                    fontSize: "18px",
                   }}
                   onClick={() => {
                     setIsOpen(true);
@@ -99,31 +104,34 @@ export function PastImmunizations() {
       {/* MODAL TO DELETE IMMUNIZATION */}
 
       <EditModal
-        className="m-auto bg-background font-regular rounded-2xl backdrop:bg-black/50 shadow-lg top-2 mx-auto"
+        className="bg-background font-regular top-2 m-auto mx-auto rounded-2xl shadow-lg backdrop:bg-black/50"
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}>
+        onClose={() => setIsOpen(false)}
+      >
         <div className="flex flex-col items-center">
-          <span className="mt-12 font-heading text-xl">
+          <span className="font-heading mt-12 text-xl">
             Are you sure you want to delete?
           </span>
-          <span className="mt-3 ml-3 mr-3  text-left">
+          <span className="ml-3 mr-3 mt-3 text-left">
             This item will be deleted immediately.
           </span>
-          <span className="mt-.5 mb-6 ">You can’t undo this action.</span>
+          <span className="mt-.5 mb-6">You can’t undo this action.</span>
           <div className="modal-actions">
             <button
               onClick={() => {
                 setIsOpen(false);
                 setDeletingImmunization(undefined);
               }}
-              className="w-25 mb-12 m-3 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+              className="w-25 font-regular m-3 mb-12 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white hover:bg-[#8D9F84] focus:outline-none"
+            >
               Cancel
             </button>
             <button
               onClick={async () => {
                 await handleDelete();
               }}
-              className="w-25 mb-12 m-3 bg-[#6A7A62] text-white font-regular py-2 px-4 rounded-2xl hover:bg-[#8D9F84] focus:outline-none cursor-pointer">
+              className="w-25 font-regular m-3 mb-12 cursor-pointer rounded-2xl bg-[#6A7A62] px-4 py-2 text-white hover:bg-[#8D9F84] focus:outline-none"
+            >
               Delete
             </button>
           </div>
