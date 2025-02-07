@@ -1,6 +1,4 @@
-// import { User } from '../components/UserContext';
-
-import { User } from "./components/UserContext";
+import { User } from './components/UserContext';
 
 export type Immunization = {
   immunizationId?: number;
@@ -28,9 +26,9 @@ export async function readImmunizations(
   petId: number,
 ): Promise<Immunization[]> {
   const req = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${readToken()}`,
     },
   };
@@ -49,7 +47,7 @@ export async function readImmunization(
   const response = await fetch(
     `/api/immunizations/${petId}/${immunizationId}`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${readToken()}`,
       },
@@ -63,10 +61,10 @@ export async function readImmunization(
 }
 
 export async function addImmunization(newImmunization: Immunization) {
-  const response = await fetch("/api/immunizations", {
-    method: "POST",
+  const response = await fetch('/api/immunizations', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(newImmunization),
@@ -78,7 +76,7 @@ export async function addImmunization(newImmunization: Immunization) {
 
 export async function removeImmunization(immunizationId: number) {
   const response = await fetch(`/api/immunizations/${immunizationId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
       Authorization: `Bearer ${readToken()}`,
     },
@@ -91,9 +89,9 @@ export async function removeImmunization(immunizationId: number) {
 
 export async function readMeds(petId: number): Promise<Medication[]> {
   const req = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${readToken()}`,
     },
   };
@@ -110,7 +108,7 @@ export async function readMed(
   medId: number,
 ): Promise<Medication | undefined> {
   const response = await fetch(`/api/medications/${petId}/${medId}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${readToken()}`,
     },
@@ -123,10 +121,10 @@ export async function readMed(
 }
 
 export async function addMed(newMed: Medication) {
-  const response = await fetch("/api/medications", {
-    method: "POST",
+  const response = await fetch('/api/medications', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(newMed),
@@ -138,9 +136,9 @@ export async function addMed(newMed: Medication) {
 
 export async function updateMed(med: Medication) {
   const response = await fetch(`/api/medications/${med.medId}`, {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(med),
@@ -153,7 +151,7 @@ export async function updateMed(med: Medication) {
 
 export async function removeMed(medId: number) {
   const response = await fetch(`/api/medications/${medId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
       Authorization: `Bearer ${readToken()}`,
     },
@@ -166,7 +164,7 @@ export async function removeMed(medId: number) {
 
 export async function readInteraction(petId: number): Promise<string> {
   const response = await fetch(`/api/compare/${petId}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${readToken()}`,
     },
@@ -178,7 +176,7 @@ export async function readInteraction(petId: number): Promise<string> {
 
 // USER MANAGEMENT
 
-const authKey = "um.auth";
+const authKey = 'um.auth';
 
 export function saveAuth(user: User, token: string): void {
   const auth: Auth = { user, token };

@@ -1,12 +1,12 @@
 /* stylelint-disable */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-logo: "Gaegu";
-  --font-heading: "Source-Serif-4";
-  --font-regular: "Poppins";
-  --font-fancy: "Ephesis";
-  --font-inter: "Inter";
+  --font-logo: 'Gaegu';
+  --font-heading: 'Source-Serif-4';
+  --font-regular: 'Poppins';
+  --font-fancy: 'Ephesis';
+  --font-inter: 'Inter';
 
   --color-grey-body: #34332e;
   --color-background: #f6f2ef;

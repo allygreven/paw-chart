@@ -1,11 +1,11 @@
-import { CgPill } from "react-icons/cg";
-import { FaThermometerFull } from "react-icons/fa";
-import { HiOutlineEnvelope } from "react-icons/hi2";
-import { LuMapPin } from "react-icons/lu";
-import { LuCalendarDays } from "react-icons/lu";
-import { FaNotesMedical } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useUser } from "../components/useUser";
+import { CgPill } from 'react-icons/cg';
+import { FaThermometerFull } from 'react-icons/fa';
+import { HiOutlineEnvelope } from 'react-icons/hi2';
+import { LuMapPin } from 'react-icons/lu';
+import { LuCalendarDays } from 'react-icons/lu';
+import { FaNotesMedical } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { useUser } from '../components/useUser';
 
 export function Homepage() {
   const { user } = useUser();
@@ -13,7 +13,7 @@ export function Homepage() {
   return (
     <div className="bg-background text-grey-body flex flex-col items-center">
       <h1 className="font-regular mb-4 mt-8 text-3xl">
-        Welcome, {user?.pets[0]?.name || "Guest"}!
+        Welcome, {user?.pets[0]?.name || 'Guest'}!
       </h1>
       <ul className="mt-8 flex list-none space-x-4">
         <li>
@@ -95,7 +95,6 @@ export function Homepage() {
         </li>
       </ul>
 
-      {/* <div className="bg-[url('/public/images/dog-and-cat.png')] bg-cover bg-center relative"></div> */}
       <img
         src="/images/dog-and-cat.png"
         alt="dog and cat looking up"

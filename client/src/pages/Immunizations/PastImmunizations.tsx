@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Immunization,
   readImmunizations,
   removeImmunization,
-} from "../../data";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { EditModal } from "./EditModal";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../components/useUser";
+} from '../../data';
+import { FaRegTrashCan } from 'react-icons/fa6';
+import { EditModal } from './EditModal';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../components/useUser';
 
 export function PastImmunizations() {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,15 +23,15 @@ export function PastImmunizations() {
   async function handleDelete() {
     try {
       if (!deletingImmunization?.immunizationId)
-        throw new Error("Should never happen");
+        throw new Error('Should never happen');
       await removeImmunization(deletingImmunization.immunizationId);
 
-      alert("Immunization deleted!");
+      alert('Immunization deleted!');
       setIsOpen(false);
       setDeletingImmunization(undefined);
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      alert("there was an error deleting immunization" + error);
+      alert('there was an error deleting immunization' + error);
     }
   }
 
@@ -39,7 +39,7 @@ export function PastImmunizations() {
     async function load() {
       try {
         if (!user) {
-          throw new Error("not signed in");
+          throw new Error('not signed in');
         }
         const immunizations = await readImmunizations(user.pets[0].petId);
         setImmunizations(immunizations);
@@ -57,7 +57,7 @@ export function PastImmunizations() {
     return (
       <div>
         Error Loading Entries:
-        {error instanceof Error ? error.message : "Unknown Error"}
+        {error instanceof Error ? error.message : 'Unknown Error'}
       </div>
     );
   }
@@ -77,18 +77,18 @@ export function PastImmunizations() {
             <tr key={row.immunizationId} className="border-b border-gray-200">
               <td className="px-4 py-2">{row.name}</td>
               <td className="px-4 py-2 text-right">
-                {new Date(row.date).toLocaleDateString("en-us", {
-                  month: "numeric",
-                  day: "numeric",
-                  year: "numeric",
+                {new Date(row.date).toLocaleDateString('en-us', {
+                  month: 'numeric',
+                  day: 'numeric',
+                  year: 'numeric',
                 })}
               </td>
               <td>
                 <FaRegTrashCan
                   style={{
-                    color: "grey",
-                    cursor: "pointer",
-                    fontSize: "18px",
+                    color: 'grey',
+                    cursor: 'pointer',
+                    fontSize: '18px',
                   }}
                   onClick={() => {
                     setIsOpen(true);

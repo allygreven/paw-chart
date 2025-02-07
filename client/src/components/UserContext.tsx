@@ -1,5 +1,5 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
-import { readToken, readUser, removeAuth, saveAuth } from "../data";
+import { ReactNode, createContext, useEffect, useState } from 'react';
+import { readToken, readUser, removeAuth, saveAuth } from '../data';
 
 export type Pets = {
   petId: number;

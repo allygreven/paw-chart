@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { CurrentMeds } from "./CurrentMeds";
-import { Medication } from "../../data";
+import { useState } from 'react';
+import { CurrentMeds } from './CurrentMeds';
+import { Medication } from '../../data';
 
 type Props = {
   meds: Medication[];

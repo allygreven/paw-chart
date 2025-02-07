@@ -1,6 +1,6 @@
-import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { User, useUser } from "../components/useUser";
+import { FormEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { User, useUser } from '../components/useUser';
 
 type AuthData = {
   user: User;
@@ -19,17 +19,17 @@ export function SignIn() {
       const formData = new FormData(event.currentTarget);
       const userData = Object.fromEntries(formData);
       const req = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       };
-      const res = await fetch("/api/auth/sign-in", req);
+      const res = await fetch('/api/auth/sign-in', req);
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
       const { user, token } = (await res.json()) as AuthData;
       handleSignIn(user, token);
-      navigate("/home");
+      navigate('/home');
     } catch (err) {
       alert(`Error signing in: ${err}`);
     } finally {

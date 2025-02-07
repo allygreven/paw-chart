@@ -1,25 +1,30 @@
-import { useState } from "react";
-import { readInteraction } from "../../data";
-import Markdown from "react-markdown";
-import { IoAlertCircleOutline } from "react-icons/io5";
-import { useUser } from "../../components/useUser";
+import { useState } from 'react';
+import { readInteraction } from '../../data';
+import Markdown from 'react-markdown';
+import { IoAlertCircleOutline } from 'react-icons/io5';
+import { useUser } from '../../components/useUser';
 
 export function Interactions() {
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>('');
   const { user } = useUser();
+  // const [spinner, setSpinner] = useState(false);
 
   async function handleSubmit() {
     try {
       if (!user) {
-        throw new Error("not signed in");
+        throw new Error('not signed in');
       }
+      // setSpinner(true)
       const interactions = await readInteraction(user.pets[0].petId);
       setMessage(interactions);
-      // setIsLoading(true);
+      // setspinner(false)
     } catch (err) {
       alert(`Error fetching OpenAi API: ${err}`);
+      // setspinner(false)
     }
   }
+
+  // if (spinner) return <div></div>
 
   return (
     <div>

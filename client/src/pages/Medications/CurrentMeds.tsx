@@ -1,12 +1,11 @@
-import { Medication, removeMed, updateMed } from "../../data";
-import { IoChevronDownOutline } from "react-icons/io5";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { FiEdit } from "react-icons/fi";
-import { DeleteModal } from "./DeleteModal";
-import { FormEvent, useState } from "react";
-import { EditMedsModal } from "./EditMedsModal";
-import { useUser } from "../../components/useUser";
-// import { IoChevronUpOutline } from 'react-icons/io5';
+import { Medication, removeMed, updateMed } from '../../data';
+import { IoChevronDownOutline } from 'react-icons/io5';
+import { FaRegTrashCan } from 'react-icons/fa6';
+import { FiEdit } from 'react-icons/fi';
+import { DeleteModal } from './DeleteModal';
+import { FormEvent, useState } from 'react';
+import { EditMedsModal } from './EditMedsModal';
+import { useUser } from '../../components/useUser';
 
 type Props = {
   med: Medication;
@@ -27,18 +26,18 @@ export function CurrentMeds({
   const [deleteMed, setDeleteMed] = useState<Medication>();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editMed, setEditMed] = useState<Medication>();
-  const [editMedName, setEditMedName] = useState("");
-  const [editDose, setEditDose] = useState("");
-  const [editDir, setEditDir] = useState("");
+  const [editMedName, setEditMedName] = useState('');
+  const [editDose, setEditDose] = useState('');
+  const [editDir, setEditDir] = useState('');
   const { user } = useUser();
 
   async function handleEditMed(event: FormEvent) {
     event.preventDefault();
     try {
       if (!user) {
-        throw new Error("not signed in");
+        throw new Error('not signed in');
       }
-      if (!editMed) throw new Error("Should never happen");
+      if (!editMed) throw new Error('Should never happen');
 
       const updatedMed = {
         ...editMed,
@@ -50,27 +49,26 @@ export function CurrentMeds({
 
       const savedMed = await updateMed(updatedMed);
 
-      alert("Medication updated!");
+      alert('Medication updated!');
       setIsEditOpen(false);
       setEditMed(undefined);
       onUpdate(savedMed);
     } catch (error) {
-      alert("there was an error updating medication" + error);
+      alert('there was an error updating medication' + error);
     }
   }
 
   async function handleDeleteMed() {
-    // event.preventDefault();
     try {
-      if (!deleteMed?.medId) throw new Error("Should never happen");
+      if (!deleteMed?.medId) throw new Error('Should never happen');
       await removeMed(deleteMed.medId);
 
-      alert("Medication deleted!");
+      alert('Medication deleted!');
       setIsDeleteOpen(false);
       setDeleteMed(undefined);
       onDelete(deleteMed);
     } catch (error) {
-      alert("there was an error deleting medication" + error);
+      alert('there was an error deleting medication' + error);
     }
   }
 
@@ -84,7 +82,6 @@ export function CurrentMeds({
       {isOpen && (
         <div className="ml-6 mr-5 flex border border-dashed border-gray-300 p-1 text-gray-500">
           {med.directions}
-          {/* <IoChevronUpOutline /> */}
           <FiEdit
             className="text-md ml-auto cursor-pointer"
             onClick={() => {
