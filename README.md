@@ -1,30 +1,28 @@
-# full-stack-project
+# PawChart :paw_prints:
 
-A full stack TypeScript solo project.
+A dynamic PERN stack solo project for pet owners to track their pets’ health and medical records.
 
-## Getting Started
-
----
-
-### Use this template to create a new repo on your GitHub account
-
-1. Click the green `Use this template` button, select `Create a new repository`
-   1. Under `Owner` select your username
-   1. Give your repository a name. Name it after your application. The name `full-stack-project` is _not_ a good name.
-   1. (Optional) Add a description
-   1. Leave repository as `Public`
-   1. **DO NOT** Include all branches
-   1. Click the green `Create repository from template` button
+## Take a look :eyes:
 
 ---
 
-### Clone Newly created repo into `lfz-code`
+### About PawChart
 
-1. From your newly created repo on GitHub, click the green `<> Code` button, then copy **SSH** URL
-1. Open `lfz-code`, click on blue `><` button in bottom left of `lfz-code`
-   1. Select `Clone Repository in Container Volume...`
-      - If this option does not appear, open the Command Palette (cmd-shift-P on Mac or ctrl-shift-P on Windows), type "Dev Containers", and select `Clone Repository in Container Volume...`. Then continue to the next step.
-   1. Paste **SSH** URL for your repo, click `Clone git repository from URL`
+  This project is a little personal for me. I have two middle-age dogs, one with every health problem under the sun who takes a plethora of medications at all hours of the day. I’m constantly challenging her many vets and specialists (all at different veterinary clinics--go figure) <i>“Are you sure she can take that with the medications she’s already on?”</i>
+  
+  I can’t be the only one dealing with this struggle, which is what led me to develop PawChart for my school project. With PawChart, users can ditch the messy file folders and keep track of their pet’s medical records digitally. Easily upload medications and dosages, then check for potential interactions with a click of a button. Whether your pet is on two meds or ten, PawChart analyzes them using OpenAI and gives you a clear, concise breakdown of any notable interactions—classified as ‘moderate’ or ‘high.’
+
+---
+
+### Let's talk code
+
+I built a custom API from scratch to securely store and manage pet medication data and immunization history—because let’s be honest, no one wants to dig through a pile of vet paperwork ever again. To take it up a notch, I integrated OpenAI’s API with some advanced prompting magic, allowing PawChart to provide medication interaction insights and a handy symptom checker. Of course, security is a must, so I implemented user authentication and management to ensure sensitive pet data remains protected. This whole application was developed with the PERN stack, and because I like a challenge, I taught myself Tailwind CSS along the way to give the app a sleek, responsive design.
+
+LearningFuze provided the configuration files and server middleware code in client-error.ts (for error handling) and authorization-middleware.ts (for user management), while I wrote all other code from the ground up.
+
+![Screenshot 2025-02-13 at 1 36 42 PM](https://github.com/user-attachments/assets/eccbf135-d42d-4228-b9d6-0c68a0ad8d16)
+![Screenshot 2025-02-13 at 1 37 10 PM](https://github.com/user-attachments/assets/076c70c6-05bb-444a-b5c0-b9c1714da027)
+
 
 ---
 
@@ -64,8 +62,10 @@ If your project will _not_ be using a database, edit `package.json` to remove th
 
 1. A React app has already been created for you.
 1. Take a minute to look over the code in `client/src/App.tsx` to get an idea of what it is doing.
-1. Go to the app in your browser. You should see the message from the server below the React logo, and in the browser console.
-   ![](md.assets/client-server.png)
+1. Go to the app in your browser. You should see the home webpage of PawChart.
+   ![pawchart-home](https://github.com/user-attachments/assets/22215393-41c8-4a09-b270-a9249c3e4df4)
+
+
 1. If you see the message from the server in your browser you are good to go, your client and server are communicating.
 
 #### Set up the database
