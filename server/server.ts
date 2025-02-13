@@ -224,7 +224,6 @@ app.put('/api/medications/:medId', authMiddleware, async (req, res, next) => {
       throw new ClientError(404, 'Medication not found');
     }
     res.json(updatedMed);
-    console.log('response sent');
   } catch (err) {
     next(err);
   }
@@ -311,7 +310,6 @@ app.post('/api/immunizations', authMiddleware, async (req, res, next) => {
     const params = [name, date, petId];
     const result = await db.query<Immunizations>(sql, params);
     res.status(201).json(result.rows[0]);
-    console.log('added immunization');
   } catch (err) {
     next(err);
   }
