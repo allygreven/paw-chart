@@ -16,7 +16,7 @@ A dynamic PERN stack solo project for pet owners to track their pets’ health a
 
 ### Let's talk code
 
-I built a custom API from scratch to securely store and manage pet medication data and immunization history—because let’s be honest, no one wants to dig through a pile of vet paperwork ever again. To take it up a notch, I integrated OpenAI’s API with some advanced prompting magic, allowing PawChart to provide medication interaction insights and a handy symptom checker. Of course, security is a must, so I implemented user authentication and management to ensure sensitive pet data remains protected. This whole application was developed with the PERN stack, and because I like a challenge, I taught myself Tailwind CSS along the way to give the app a sleek, responsive design.
+I built a custom API from scratch to securely store and manage pet medication data and immunization history. To take it up a notch, I integrated OpenAI’s API with some advanced prompting magic, allowing PawChart to provide medication interaction insights and a handy symptom checker. Security is important, so I implemented user authentication and management to ensure sensitive pet data remains protected. This whole application was developed with the PERN stack, and because I like a challenge, I taught myself Tailwind CSS along the way to give the app a sleek, responsive design.
 
 LearningFuze provided the configuration files and server middleware code in client-error.ts (for error handling) and authorization-middleware.ts (for user management), while I wrote all other code from the ground up.
 
