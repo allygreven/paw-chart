@@ -79,7 +79,7 @@ export function Medications() {
   return (
     <div>
       <div className="text-grey-body bg-background flex flex-col items-center">
-        <h1 className="font-heading mb-7 mt-6 text-2xl">Medications</h1>
+        <h1 className="font-heading mt-22 mb-7 text-2xl">Medications</h1>
         <button
           onClick={() => setIsOpen(true)}
           type="button"
@@ -104,7 +104,7 @@ export function Medications() {
               required
               type="text"
               placeholder="Medication"
-              className="w-85 mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+              className="mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none sm:w-[350px] md:w-[350px] lg:w-[350px] xl:w-[340px]"
             ></input>
             <label>Dosage</label>
             <input
@@ -113,7 +113,7 @@ export function Medications() {
               required
               type="text"
               placeholder="Type here"
-              className="w-85 mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+              className="mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none sm:w-[350px] md:w-[350px] lg:w-[350px] xl:w-[340px]"
             ></input>
             <label>Directions</label>
             <input
@@ -121,7 +121,7 @@ export function Medications() {
               value={directions}
               onChange={(e) => setDirections(e.target.value)}
               placeholder="Not required"
-              className="w-85 mb-12 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+              className="mb-12 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none sm:w-[350px] md:w-[350px] lg:w-[350px] xl:w-[340px]"
             ></input>
 
             <div className="mt-4 flex justify-center space-x-4">

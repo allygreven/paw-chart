@@ -43,7 +43,7 @@ export function Interactions() {
     );
 
   return (
-    <div>
+    <div className="">
       <div className="inline-flex items-center gap-4">
         <h2 className="font-heading mb-3 text-xl">Interactions</h2>
         <button
@@ -54,7 +54,7 @@ export function Interactions() {
           Click here
         </button>
       </div>
-      <div className="w-125 font-regular mb-6 bg-white p-4 shadow-[0px_10px_10px_rgba(0,0,0,0.3)] drop-shadow-md">
+      <div className="xl:w-125 font-regular mb-6 bg-white p-4 shadow-[0px_10px_10px_rgba(0,0,0,0.3)] drop-shadow-md sm:w-80">
         {message && (
           <div className="flex items-start gap-2">
             <IoAlertCircleOutline className="text-5xl text-red-500" />
@@ -65,6 +65,3 @@ export function Interactions() {
     </div>
   );
 }
-
-// put in button css
-// ${isLoading ? 'cursor-wait opacity-50' : 'hover:bg-blue-700'}

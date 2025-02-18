@@ -118,7 +118,7 @@ export function CurrentMeds({
             required
             type="text"
             placeholder="Search"
-            className="w-85 mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+            className="mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none sm:w-[350px] md:w-[350px] lg:w-[350px] xl:w-[340px]"
           ></input>
           <label>Dosage</label>
           <input
@@ -127,7 +127,7 @@ export function CurrentMeds({
             required
             type="text"
             placeholder="Type here"
-            className="w-85 mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+            className="mb-6 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none sm:w-[350px] md:w-[350px] lg:w-[350px] xl:w-[340px]"
           ></input>
           <label>Directions</label>
           <input
@@ -135,7 +135,7 @@ export function CurrentMeds({
             value={editDir}
             onChange={(e) => setEditDir(e.target.value)}
             placeholder="Not required"
-            className="w-85 mb-12 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none"
+            className="mb-12 mt-2 block rounded-xl border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none sm:w-[350px] md:w-[350px] lg:w-[350px] xl:w-[340px]"
           ></input>
           <div className="flex justify-center space-x-4">
             <button

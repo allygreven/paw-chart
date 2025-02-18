@@ -1,7 +1,7 @@
 export function SymptomChecker() {
   return (
-    <div className="bg-background font-regular text-grey-body flex h-screen flex-col items-center">
-      <h1 className="font-heading mb-4 mt-6 text-2xl font-light">
+    <div className="bg-background font-regular text-grey-body flex h-screen w-full flex-col items-center">
+      <h1 className="font-heading mt-22 mb-4 text-2xl font-light">
         Symptom Checker
       </h1>
 

@@ -1,8 +1,5 @@
 import { CgPill } from 'react-icons/cg';
 import { FaThermometerFull } from 'react-icons/fa';
-import { HiOutlineEnvelope } from 'react-icons/hi2';
-import { LuMapPin } from 'react-icons/lu';
-import { LuCalendarDays } from 'react-icons/lu';
 import { FaNotesMedical } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useUser } from '../components/useUser';
@@ -12,14 +9,14 @@ export function Homepage() {
 
   return (
     <div className="bg-background text-grey-body flex flex-col items-center">
-      <h1 className="font-regular mb-4 mt-8 text-3xl">
+      <h1 className="font-regular mt-25 mb-4 text-3xl">
         Welcome, {user?.pets[0]?.name || 'Guest'}!
       </h1>
       <ul className="mt-8 flex list-none space-x-4">
         <li>
           <button
             type="button"
-            className="text-grey-body text-md mb-6 w-full cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
+            className="text-grey-body text-md w-30 mb-6 cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
           >
             <Link to="/medications" className="flex flex-col items-center p-2">
               <CgPill className="text-4xl" />
@@ -31,7 +28,7 @@ export function Homepage() {
         <li>
           <button
             type="button"
-            className="text-grey-body text-md mb-6 w-full cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
+            className="text-grey-body w-30 h-21 mb-6 cursor-pointer rounded-3xl bg-white py-1 text-xs shadow-md hover:bg-[#EEEDE8] focus:outline-none"
           >
             <Link
               to="/symptom-checker"
@@ -46,7 +43,7 @@ export function Homepage() {
         <li>
           <button
             type="button"
-            className="text-grey-body text-md mb-6 w-full cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
+            className="text-grey-body text-md w-30 mb-6 cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
           >
             <Link
               to="/immunizations"
@@ -54,42 +51,6 @@ export function Homepage() {
             >
               <FaNotesMedical className="text-4xl" />
               <span>Immunizations</span>
-            </Link>
-          </button>
-        </li>
-
-        <li>
-          <button
-            type="button"
-            className="text-grey-body text-md mb-6 w-full cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
-          >
-            <Link to="/message" className="flex flex-col items-center p-2">
-              <HiOutlineEnvelope className="text-4xl" />
-              <span>Message</span>
-            </Link>
-          </button>
-        </li>
-
-        <li>
-          <button
-            type="button"
-            className="text-grey-body text-md mb-6 w-full cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
-          >
-            <Link to="/nearby" className="flex flex-col items-center p-2">
-              <LuMapPin className="text-4xl" />
-              <span>Nearby Vets</span>
-            </Link>
-          </button>
-        </li>
-
-        <li>
-          <button
-            type="button"
-            className="text-grey-body text-md mb-6 w-full cursor-pointer rounded-3xl bg-white py-1 shadow-md hover:bg-[#EEEDE8] focus:outline-none"
-          >
-            <Link to="/appointments" className="flex flex-col items-center p-2">
-              <LuCalendarDays className="text-4xl" />
-              <span>Appointments</span>
             </Link>
           </button>
         </li>

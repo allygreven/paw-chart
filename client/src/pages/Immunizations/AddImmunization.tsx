@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../components/useUser';
+import { readToken } from '../../data';
 
 export function AddImmunizations() {
   const [immunization, setImmunization] = useState('');
@@ -14,7 +15,10 @@ export function AddImmunizations() {
     try {
       const req = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${readToken()}`,
+        },
         body: JSON.stringify({
           name: immunization,
           date: date,
