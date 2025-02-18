@@ -1,7 +1,7 @@
 export function About() {
   return (
     <div className="bg-background color-grey-body flex h-screen justify-center">
-      <div className="max-w-lg text-center">
+      <div className="mt-18 max-w-lg text-center">
         <h1 className="font-heading mt-6 text-3xl">About us</h1>
         <p className="font-regular mt-10">
           Welcome to PawChart, your trusted companion for managing your pet's

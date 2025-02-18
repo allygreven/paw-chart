@@ -18,7 +18,7 @@ export function NavDrawer({ menuItems }: Props) {
 
   return (
     <div className="bg-background h-screen">
-      <header className="m-auto w-full bg-gradient-to-r from-[#6A7A62] to-[#B5CCAA] p-1 text-white">
+      <header className="fixed z-50 m-auto w-full bg-gradient-to-r from-[#6A7A62] to-[#B5CCAA] p-1 text-white">
         <div className="flex items-center space-x-4">
           <IoIosMenu
             onClick={() => setIsOpen(!isOpen)}
