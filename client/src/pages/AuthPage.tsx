@@ -17,7 +17,7 @@ export function AuthPage({ mode }: Props) {
   }
 
   return (
-    <div className="container m-4">
+    <div className="container">
       {mode === 'register' && <Register />}
       {mode === 'sign-in' && <SignIn />}
     </div>

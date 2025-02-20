@@ -34,12 +34,12 @@ export function Register() {
   }
 
   return (
-    <div className="bg-background font-regular flex h-screen">
+    <div className="bg-background font-regular">
       <form
         onSubmit={handleSubmit}
         className="min-w-md mx-auto flex flex-col items-center space-y-4 p-6"
       >
-        <label className="text-grey-body block items-center pb-5 pt-5 text-center text-3xl">
+        <label className="text-grey-body pt-18 block items-center pb-5 text-center text-3xl">
           Register
         </label>
         <input
