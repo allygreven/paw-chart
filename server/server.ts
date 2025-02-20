@@ -240,7 +240,7 @@ app.delete(
       }
       const sql = `
       delete from "medications"
-      where "medId" = $1
+      where "medId" = $1 and "petId" = $2
       returning *
     `;
       const result = await db.query(sql, [medId, req.user?.userId]);
@@ -326,7 +326,7 @@ app.delete(
       }
       const sql = `
       delete from "immunizations"
-      where "immunizationId" = $1
+      where "immunizationId" = $1 and "petId" = $2
       returning *
     `;
       const result = await db.query(sql, [immunizationId, req.user?.userId]);

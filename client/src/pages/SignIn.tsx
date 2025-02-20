@@ -43,7 +43,7 @@ export function SignIn() {
         onSubmit={handleSubmit}
         className="mx-auto flex max-w-lg flex-col items-center space-y-4 p-6"
       >
-        <label className="block items-center pb-5 pt-5 text-center text-3xl text-[#34332E]">
+        <label className="pt-18 block items-center pb-5 text-center text-3xl text-[#34332E]">
           Sign-in
         </label>
         <input
